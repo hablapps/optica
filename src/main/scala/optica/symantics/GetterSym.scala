@@ -65,6 +65,11 @@ object GetterSym {
       def -(y: Repr[Getter[S, Int]]): Repr[Getter[S, Int]] =
         ev.subtract(gt, y)
     }
+
+    implicit def liftLike[Repr[_], S, B: Base](
+        b: B)(implicit
+        ev: GetterSym[Repr]): Repr[Getter[S, B]] =
+      ev.like(b)
   }
 
   object syntax extends Syntax

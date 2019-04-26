@@ -33,10 +33,17 @@ object FoldSym {
   trait Syntax {
 
     implicit class FoldOps[Repr[_], S, A](
-        f: Repr[Fold[S, A]])(implicit 
+        fl: Repr[Fold[S, A]])(implicit 
         ev: FoldSym[Repr]) {
-      def >>>[B](g: Repr[Fold[A, B]]): Repr[Fold[S, B]] = 
-        ev.comp_fl(f, g)
+
+      def >>>[B](other: Repr[Fold[A, B]]): Repr[Fold[S, B]] = 
+        ev.comp_fl(fl, other)
+
+      def all(p: Repr[Getter[A, Boolean]]): Repr[Getter[S, Boolean]] =
+        ev.all(fl)(p)
+
+      def elem(a: A)(implicit B: Base[A]): Repr[Getter[S, Boolean]] =
+        ev.elem(fl)(a)
     }
 
     implicit def afl_as_fl[Repr[_], S, A](

@@ -16,7 +16,7 @@ class CoupleRTest extends FlatSpec with Matchers {
   object CoupleLogicR extends CoupleLogic[λ[x => x]]
   import CoupleLogicR.differences
 
-  "Optica" should "recover concrete optics" in {
+  "Optica" should "recover differences" in {
     differences.getAll(data) shouldBe List("Alex" -> 5, "Cora" -> 2) 
   }
 }
