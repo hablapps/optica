@@ -28,7 +28,9 @@ object Optica {
   trait Syntax extends GetterSym.Syntax 
     with AffineFoldSym.Syntax with FoldSym.Syntax
 
-  implicit object R extends interpreter.R
+  implicit object ROptica extends interpreter.R
+
+  implicit object XQueryOptica extends interpreter.XQuerySym
 
   object syntax extends Syntax
 }
