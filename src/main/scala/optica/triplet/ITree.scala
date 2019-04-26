@@ -1,7 +1,9 @@
 package dev.habla.optica
 package triplet
 
+import Function.const
 import scalaz._, Scalaz._
+import monocle.Optional, monocle.function.Index
 
 case class ITree[I: Order, A](
     tag: A, 
@@ -32,18 +34,18 @@ object ITree {
     }
   }
 
-  // implicit def iTreeIndex[I: Order, A]: Index[ITree[I, A], I, ITree[I, A]] = 
-  //     new Index[ITree[I, A], I, ITree[I, A]] { 
-  //   def index(i: I) = Optional[ITree[I, A], ITree[I, A]](
-  //     s => s.forest.lookup(i))(
-  //     it => s => s.copy(forest = s.forest.adjust(i, const(it))))
-  // }
+  implicit def iTreeIndex[I: Order, A]: Index[ITree[I, A], I, ITree[I, A]] = 
+      new Index[ITree[I, A], I, ITree[I, A]] { 
+    def index(i: I) = Optional[ITree[I, A], ITree[I, A]](
+      s => s.forest.lookup(i))(
+      it => s => s.copy(forest = s.forest.adjust(i, const(it))))
+  }
 
-  // implicit def iListTreeIndex[I: Order, A]: Index[ITree[I, A], List[I], ITree[I, A]] =
-  //     new Index[ITree[I, A], List[I], ITree[I, A]] {
-  //   def index(is: List[I]) = is.foldRight(Optional.id[ITree[I, A]]){ (i, acc) => 
-  //     acc.composeOptional(iTreeIndex[I, A].index(i))
-  //   }
-  // }
+  implicit def iListTreeIndex[I: Order, A]: Index[ITree[I, A], List[I], ITree[I, A]] =
+      new Index[ITree[I, A], List[I], ITree[I, A]] {
+    def index(is: List[I]) = is.foldRight(Optional.id[ITree[I, A]]){ (i, acc) => 
+      acc.composeOptional(iTreeIndex[I, A].index(i))
+    }
+  }
 }
 

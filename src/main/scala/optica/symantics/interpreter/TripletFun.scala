@@ -3,6 +3,7 @@ package symantics
 package interpreter
 
 import triplet._
+import monocle.function.all._
 
 trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
 
@@ -64,6 +65,6 @@ trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
   def as_fl[S, A](afl: TripletFun) = afl
 }
 
-class TripletFun extends Optica[λ[x => TripletFun]]
+class TripletFunSym extends Optica[λ[x => TripletFun]]
   with TripletFunGetterSym with TripletFunAffineFoldSym with TripletFunFoldSym
 
