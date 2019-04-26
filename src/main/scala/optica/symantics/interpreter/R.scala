@@ -15,7 +15,7 @@ trait RGetterSym extends GetterSym[λ[x => x]] {
 
   def id_gt[S] = Category[Getter].id
 
-  def like[S, A: Base](a: A) = Getter.like(a)
+  def like[S, A: Base](a: A) = a
 
   def not[S](b: Getter[S, Boolean]) = Getter.not(b)
 
@@ -55,6 +55,6 @@ trait RFoldSym extends FoldSym[λ[x => x]] {
   def as_fl[S, A](afl: AffineFold[S, A]) = afl
 }
 
-object R extends Optica[λ[x => x]]
+class R extends Optica[λ[x => x]]
   with RGetterSym with RAffineFoldSym with RFoldSym
 

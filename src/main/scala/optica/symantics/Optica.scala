@@ -28,6 +28,8 @@ object Optica {
   trait Syntax extends GetterSym.Syntax 
     with AffineFoldSym.Syntax with FoldSym.Syntax
 
+  implicit object R extends interpreter.R
+
   object syntax extends Syntax
 }
 
