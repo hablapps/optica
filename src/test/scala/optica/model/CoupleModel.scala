@@ -4,6 +4,7 @@ package model
 
 import example._
 import concrete._
+import xquery._
 import symantics._
 
 trait CoupleModel[Repr[_]] {
@@ -22,6 +23,14 @@ object CoupleModel {
     val him = Getter(_.him)
     val name = Getter(_.name)
     val age = Getter(_.age)
+  }
+
+  implicit object XQueryCoupleModel extends CoupleModel[λ[x => XQuery]] {
+    val couples = Name("couple")
+    val her = Name("her")
+    val him = Name("him")
+    val name = Name("name")
+    val age = Name("age")
   }
 }
 
