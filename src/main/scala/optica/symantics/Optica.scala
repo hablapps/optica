@@ -2,7 +2,6 @@ package dev.habla.optica
 package symantics
 
 import concrete._
-import FolsSym.syntax._
 
 trait Optica[Repr[_]] extends GetterSym[Repr] 
     with AffineFoldSym[Repr] with FoldSym[Repr] {
@@ -22,5 +21,13 @@ trait Optica[Repr[_]] extends GetterSym[Repr]
 
   def elem[S, A: Base](fl: Repr[Fold[S, A]])(a: A): Repr[Getter[S, Boolean]] =
     any(fl)(equal(id_gt, like(a)))
+}
+
+object Optica {
+
+  trait Syntax extends GetterSym.Syntax 
+    with AffineFoldSym.Syntax with FoldSym.Syntax
+
+  object syntax extends Syntax
 }
 
