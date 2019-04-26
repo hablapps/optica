@@ -1,11 +1,10 @@
-package dev.habla.optica
-package test
+package dev.habla
+package optica
+package model
 
+import example._
 import concrete._
 import symantics._
-
-case class Couple(her: Person, him: Person)
-case class Person(name: String, age: Int)
 
 trait CoupleModel[Repr[_]] {
   def couples: Repr[Fold[Couples, Couple]]
