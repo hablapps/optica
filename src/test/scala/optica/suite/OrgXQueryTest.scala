@@ -11,7 +11,7 @@ class OrgXQueryTest extends FlatSpec with Matchers {
   object OrgLogicXQuery extends OrgLogic[λ[x => XQuery]]
   import OrgLogicXQuery.expertise
 
-  "Optica" should "translate differences into a fold" in {
+  "Optica" should "translate differences into an XQuery expression" in {
     expertise("abstract").toString shouldBe """department[not(exists(employee[not(exists(task/tsk[. = "abstract"]))]))]/dpt"""
   }
 }
