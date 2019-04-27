@@ -32,6 +32,8 @@ object Optica {
 
   implicit object XQueryOptica extends interpreter.XQuerySym
 
+  implicit object TripletFunOptica extends interpreter.TripletFunSym
+
   object syntax extends Syntax
 }
 

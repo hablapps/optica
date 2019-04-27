@@ -1,5 +1,8 @@
 package dev.habla.optica
 
+import scalaz._
+import sql._
+
 package object `triplet` {
 
   type VarTree = ITree[OpticType, (String, Boolean)]
@@ -22,5 +25,10 @@ package object `triplet` {
     mergeWith(e1, e2) {
       case ((a1, b1, c1), (a2, b2, c2)) => (f(a1, a2), g(b1, b2), h(c1, c2))
     }
+
+  implicit class TripletFunOps(tf: TripletFun) {
+    def toSQL(keys: TypeNme ==>> FieldNme): Error \/ SSelect = 
+      interpreter.ToSQL.toSql(tf, keys)
+  }
 }
 

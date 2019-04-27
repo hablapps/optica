@@ -5,6 +5,7 @@ package model
 import example._
 import concrete._
 import xquery._
+import triplet._
 import symantics._
 
 trait CoupleModel[Repr[_]] {
@@ -31,6 +32,16 @@ object CoupleModel {
     val him = Name("him")
     val name = Name("name")
     val age = Name("age")
+  }
+
+  import Optica.TripletFunOptica.{base, entity}
+
+  implicit object TripletFunCoupleModel extends CoupleModel[λ[x => TripletFun]] {
+    val couples = entity(FoldType("couples", "Couples", "Couple"), "c")
+    val her = entity(GetterType("her", "Couple", "Person"), "w")
+    val him = entity(GetterType("him", "Couple", "Person"), "m")
+    val name = base(GetterType("name", "Person", "String"))
+    val age = base(GetterType("age", "Person", "Int"))
   }
 }
 
