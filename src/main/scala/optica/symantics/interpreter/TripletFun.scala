@@ -66,5 +66,23 @@ trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
 }
 
 class TripletFunSym extends Optica[λ[x => TripletFun]]
-  with TripletFunGetterSym with TripletFunAffineFoldSym with TripletFunFoldSym
+    with TripletFunGetterSym 
+    with TripletFunAffineFoldSym 
+    with TripletFunFoldSym {
+
+  def entity(ot: OpticType, vn: String): TripletFun = {
+    case (List(Path(xs)), f, w) => {
+      val f2 = index[VarTree, List[OpticType], VarTree](xs).modify { it =>
+        it.copy(forest = it.forest.insertWith((_, e) => e, ot, ITree((vn, true))))
+      }(f)
+      (List(Path(ot :: xs)), f2, w)
+    }
+    case _ => throw new Error("should never happen")
+  }
+
+  def base(ot: OpticType): TripletFun = first[Triplet, List[TExpr]].modify { 
+    case List(e: Path) => List(Proj(e, ot))
+    case _ => throw new Error("should never happen")
+  }
+}
 

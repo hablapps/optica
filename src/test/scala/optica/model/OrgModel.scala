@@ -5,6 +5,7 @@ package model
 import example._
 import concrete._
 import xquery._
+import triplet._
 import symantics._
 
 trait OrgModel[Repr[_]] {
@@ -31,6 +32,16 @@ object OrgModel {
     val employees = Name("employee")
     val tasks = Name("task")
     val tsk = Name("tsk")
+  }
+
+  import Optica.TripletFunOptica.{base, entity}
+
+  implicit object TripletFunOrgModel extends OrgModel[λ[x => TripletFun]] {
+    val departments = entity(FoldType("departments", "Org", "Department"), "d")
+    val dpt = base(GetterType("dpt", "Department", "String"))
+    val employees = entity(FoldType("employees", "Department", "Employee"), "e")
+    val tasks = entity(FoldType("tasks", "Employee", "Task"), "t")
+    val tsk = base(GetterType("tsk", "Task", "String"))
   }
 }
 
