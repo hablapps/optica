@@ -45,15 +45,11 @@ object OrgModel {
   }
 }
 
-class OrgLogic[Repr[_]](implicit O: Optica[Repr]) {
+class OrgLogic[Repr[_]](implicit O: Optica[Repr], M: OrgModel[Repr]) {
   import Optica.syntax._
-  import O._
+  import O._, M._
 
-  def expertise(
-      u: String)(implicit 
-      M: OrgModel[Repr]): Repr[Fold[Org, String]] = {
-    import M._
+  def expertise(u: String): Repr[Fold[Org, String]] =
     departments >>> filtered(employees.all((tasks >>> tsk).elem(u))) >>> dpt
-  }
 }
 

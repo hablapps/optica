@@ -45,15 +45,12 @@ object CoupleModel {
   }
 }
 
-class CoupleLogic[Repr[_]](implicit O: Optica[Repr]) {
+class CoupleLogic[Repr[_]](implicit O: Optica[Repr], M: CoupleModel[Repr]) {
   import Optica.syntax._
-  import O._
+  import O._, M._
 
-  def differences(implicit
-      M: CoupleModel[Repr]): Repr[Fold[Couples, (String, Int)]] = {
-    import M._
+  def differences: Repr[Fold[Couples, (String, Int)]] =
     couples >>> filtered((her >>> age) > (him >>> age)) >>>
                 (her >>> name) *** ((her >>> age) - (him >>> age))
-  }
 }
 
