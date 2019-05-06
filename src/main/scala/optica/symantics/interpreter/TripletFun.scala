@@ -2,10 +2,11 @@ package dev.habla.optica
 package symantics
 package interpreter
 
+import Function.const
 import monocle.function.all._
-import scalaz._
+import scalaz._, Scalaz._
 
-import triplet._
+import triplet._, triplet.interpreter.ToSQL
 import sql._
 
 trait TripletFunGetterSym 
@@ -40,7 +41,8 @@ trait TripletFunGetterSym
 
   def subtract[S](x: TripletFun, y: TripletFun) = binary(x, y)(Sub)
 
-  def get[S, A](gt: TripletFun) = ???
+  def get[S, A](gt: TripletFun) = 
+    const(new Error("unsupported action: `get`").left)
 }
 
 trait TripletFunAffineFoldSym 
@@ -59,7 +61,8 @@ trait TripletFunAffineFoldSym
 
   def as_afl[S, A](gt: TripletFun) = gt
 
-  def getOpt[S, A](af: TripletFun) = ???
+  def getOpt[S, A](af: TripletFun) = 
+    const(new Error("unsupported action: `getOpt`").left)
 }
 
 trait TripletFunFoldSym 
@@ -77,7 +80,7 @@ trait TripletFunFoldSym
 
   def as_fl[S, A](afl: TripletFun) = afl
 
-  def getAll[S, A](fl: TripletFun) = triplet.interpreter.ToSQL.toSql(fl, _)
+  def getAll[S, A](fl: TripletFun) = ToSQL.toSql(fl, _)
 }
 
 class TripletFunSym 
