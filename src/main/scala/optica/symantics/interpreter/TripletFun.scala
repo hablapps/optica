@@ -2,8 +2,11 @@ package dev.habla.optica
 package symantics
 package interpreter
 
-import triplet._
 import monocle.function.all._
+import scalaz._
+
+import triplet._
+import sql._
 
 trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
 
@@ -51,7 +54,9 @@ trait TripletFunAffineFoldSym extends AffineFoldSym[λ[x => TripletFun]] {
   def as_afl[S, A](gt: TripletFun) = gt
 }
 
-trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
+trait TripletFunFoldSym 
+    extends FoldSym[λ[x => TripletFun], 
+                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def id_fl[S] = identity
 
@@ -63,9 +68,13 @@ trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
   }
 
   def as_fl[S, A](afl: TripletFun) = afl
+
+  def getAll[S, A](fl: TripletFun) = triplet.interpreter.ToSQL.toSql(fl, _)
 }
 
-class TripletFunSym extends Optica[λ[x => TripletFun]]
+class TripletFunSym 
+    extends Optica[λ[x => TripletFun], 
+                   λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]]
     with TripletFunGetterSym 
     with TripletFunAffineFoldSym 
     with TripletFunFoldSym {

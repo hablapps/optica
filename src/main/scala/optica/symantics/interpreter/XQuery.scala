@@ -39,7 +39,7 @@ trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery]] {
   def as_afl[S, A](gt: XQuery) = gt
 }
 
-trait XQueryFoldSym extends FoldSym[λ[x => XQuery]] {
+trait XQueryFoldSym extends FoldSym[λ[x => XQuery], λ[x => XQuery]] {
 
   def id_fl[S] = Self
 
@@ -48,8 +48,10 @@ trait XQueryFoldSym extends FoldSym[λ[x => XQuery]] {
   def nonEmpty[S, A](fl: XQuery) = Func("exists", fl)
 
   def as_fl[S, A](afl: XQuery) = afl
+
+  def getAll[S, A](fl: XQuery) = Seq(Document, Seq(Name("xml"), fl))
 }
 
-class XQuerySym extends Optica[λ[x => XQuery]]
+class XQuerySym extends Optica[λ[x => XQuery], λ[x => XQuery]]
   with XQueryGetterSym with XQueryAffineFoldSym with XQueryFoldSym
 

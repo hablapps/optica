@@ -13,11 +13,11 @@ class CoupleRTest extends FlatSpec with Matchers {
     Couple(Person("Cora", 33), Person("Drew", 31)),
     Couple(Person("Edna", 21), Person("Fred", 60)))
 
-  object CoupleLogicR extends CoupleLogic[λ[x => x]]
+  object CoupleLogicR extends CoupleLogic[λ[x => x], λ[x => x]]
   import CoupleLogicR.differences
 
   "Optica" should "translate differences into a fold" in {
-    differences.getAll(data) shouldBe List("Alex" -> 5, "Cora" -> 2) 
+    differences(data) shouldBe List("Alex" -> 5, "Cora" -> 2) 
   }
 }
 
