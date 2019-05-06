@@ -58,7 +58,7 @@ object FoldSym {
     implicit def gt_as_fl[Repr[_], Obs[_], S, A](
         gt: Repr[Getter[S, A]])(implicit
         ev1: FoldSym[Repr, Obs], 
-        ev2: AffineFoldSym[Repr]): Repr[Fold[S, A]] =
+        ev2: AffineFoldSym[Repr, Obs]): Repr[Fold[S, A]] =
       ev1.as_fl(ev2.as_afl(gt))
   }
 

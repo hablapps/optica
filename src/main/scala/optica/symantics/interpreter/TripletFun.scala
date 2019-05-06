@@ -8,7 +8,9 @@ import scalaz._
 import triplet._
 import sql._
 
-trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
+trait TripletFunGetterSym 
+    extends GetterSym[λ[x => TripletFun],
+                      λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def id_gt[S] = identity
 
@@ -37,9 +39,13 @@ trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
   def greaterThan[S](x: TripletFun, y: TripletFun) = binary(x, y)(GreaterThan)
 
   def subtract[S](x: TripletFun, y: TripletFun) = binary(x, y)(Sub)
+
+  def get[S, A](gt: TripletFun) = ???
 }
 
-trait TripletFunAffineFoldSym extends AffineFoldSym[λ[x => TripletFun]] {
+trait TripletFunAffineFoldSym 
+    extends AffineFoldSym[λ[x => TripletFun],
+                          λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def id_af[S] = identity
 
@@ -52,6 +58,8 @@ trait TripletFunAffineFoldSym extends AffineFoldSym[λ[x => TripletFun]] {
   }
 
   def as_afl[S, A](gt: TripletFun) = gt
+
+  def getOpt[S, A](af: TripletFun) = ???
 }
 
 trait TripletFunFoldSym 

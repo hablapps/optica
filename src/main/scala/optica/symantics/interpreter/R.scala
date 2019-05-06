@@ -7,7 +7,7 @@ import concrete._
 import CategoryWithProduct.syntax._, Getter.syntax._, Fold.syntax._
 import Base._
 
-trait RGetterSym extends GetterSym[λ[x => x]] {
+trait RGetterSym extends GetterSym[λ[x => x], λ[x => x]] {
 
   def comp_gt[S, A, B](u: Getter[S, A], d: Getter[A, B]) = u >>> d
 
@@ -31,9 +31,11 @@ trait RGetterSym extends GetterSym[λ[x => x]] {
   def greaterThan[S](x: Getter[S, Int], y: Getter[S, Int]) = x > y
 
   def subtract[S](x: Getter[S, Int], y: Getter[S, Int]) = x - y
+
+  def get[S, A](gt: Getter[S, A]) = gt.get
 }
 
-trait RAffineFoldSym extends AffineFoldSym[λ[x => x]] {
+trait RAffineFoldSym extends AffineFoldSym[λ[x => x], λ[x => x]] {
 
   def id_af[S] = Category[AffineFold].id
 
@@ -42,6 +44,8 @@ trait RAffineFoldSym extends AffineFoldSym[λ[x => x]] {
   def filtered[S](p: Getter[S, Boolean]) = AffineFold.filtered(p)
 
   def as_afl[S, A](gt: Getter[S, A]) = gt
+
+  def getOpt[S, A](af: AffineFold[S, A]) = af.getOpt
 }
 
 trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {

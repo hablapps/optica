@@ -5,7 +5,7 @@ package interpreter
 import xquery._
 import Base._
 
-trait XQueryGetterSym extends GetterSym[λ[x => XQuery]] {
+trait XQueryGetterSym extends GetterSym[λ[x => XQuery], λ[x => XQuery]] {
 
   def id_gt[S] = Self
 
@@ -26,9 +26,11 @@ trait XQueryGetterSym extends GetterSym[λ[x => XQuery]] {
   def greaterThan[S](x: XQuery, y: XQuery) = Oper(">", x, y)
 
   def subtract[S](x: XQuery, y: XQuery) = Oper("-", x, y)
+
+  def get[S, A](gt: XQuery) = Seq(Document, Seq(Name("xml"), gt))
 }
 
-trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery]] {
+trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery], λ[x => XQuery]] {
 
   def id_af[S] = Self
   
@@ -37,6 +39,8 @@ trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery]] {
   def filtered[S](p: XQuery) = Filter(p)
 
   def as_afl[S, A](gt: XQuery) = gt
+
+  def getOpt[S, A](fl: XQuery) = Seq(Document, Seq(Name("xml"), fl))
 }
 
 trait XQueryFoldSym extends FoldSym[λ[x => XQuery], λ[x => XQuery]] {
