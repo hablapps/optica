@@ -2,10 +2,16 @@ package dev.habla.optica
 package symantics
 package interpreter
 
-import triplet._
+import Function.const
 import monocle.function.all._
+import scalaz._, Scalaz._
 
-trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
+import triplet._, triplet.interpreter.ToSQL
+import sql._
+
+trait TripletFunGetterSym 
+    extends GetterSym[λ[x => TripletFun],
+                      λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def id_gt[S] = identity
 
@@ -34,9 +40,14 @@ trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
   def greaterThan[S](x: TripletFun, y: TripletFun) = binary(x, y)(GreaterThan)
 
   def subtract[S](x: TripletFun, y: TripletFun) = binary(x, y)(Sub)
+
+  def get[S, A](gt: TripletFun) = 
+    const(new Error("unsupported action: `get`").left)
 }
 
-trait TripletFunAffineFoldSym extends AffineFoldSym[λ[x => TripletFun]] {
+trait TripletFunAffineFoldSym 
+    extends AffineFoldSym[λ[x => TripletFun],
+                          λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def id_af[S] = identity
 
@@ -49,9 +60,14 @@ trait TripletFunAffineFoldSym extends AffineFoldSym[λ[x => TripletFun]] {
   }
 
   def as_afl[S, A](gt: TripletFun) = gt
+
+  def getOpt[S, A](af: TripletFun) = 
+    const(new Error("unsupported action: `getOpt`").left)
 }
 
-trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
+trait TripletFunFoldSym 
+    extends FoldSym[λ[x => TripletFun], 
+                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def id_fl[S] = identity
 
@@ -63,9 +79,13 @@ trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
   }
 
   def as_fl[S, A](afl: TripletFun) = afl
+
+  def getAll[S, A](fl: TripletFun) = ToSQL.toSql(fl, _)
 }
 
-class TripletFunSym extends Optica[λ[x => TripletFun]]
+class TripletFunSym 
+    extends Optica[λ[x => TripletFun], 
+                   λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]]
     with TripletFunGetterSym 
     with TripletFunAffineFoldSym 
     with TripletFunFoldSym {

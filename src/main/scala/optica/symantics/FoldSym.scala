@@ -3,7 +3,7 @@ package symantics
 
 import concrete._
 
-trait FoldSym[Repr[_]] {
+trait FoldSym[Repr[_], Obs[_]] {
 
   def id_fl[S]: Repr[Fold[S, S]]
 
@@ -26,15 +26,17 @@ trait FoldSym[Repr[_]] {
   def elem[S, A: Base](fl: Repr[Fold[S, A]])(a: A): Repr[Getter[S, Boolean]]
 
   def as_fl[S, A](afl: Repr[AffineFold[S, A]]): Repr[Fold[S, A]]
+
+  def getAll[S, A](fl: Repr[Fold[S, A]]): Obs[S => List[A]]
 }
 
 object FoldSym {
 
   trait Syntax {
 
-    implicit class FoldOps[Repr[_], S, A](
+    implicit class FoldOps[Repr[_], Obs[_], S, A](
         fl: Repr[Fold[S, A]])(implicit 
-        ev: FoldSym[Repr]) {
+        ev: FoldSym[Repr, Obs]) {
 
       def >>>[B](other: Repr[Fold[A, B]]): Repr[Fold[S, B]] = 
         ev.comp_fl(fl, other)
@@ -44,17 +46,19 @@ object FoldSym {
 
       def elem(a: A)(implicit B: Base[A]): Repr[Getter[S, Boolean]] =
         ev.elem(fl)(a)
+
+      def getAll: Obs[S => List[A]] = ev.getAll(fl)
     }
 
-    implicit def afl_as_fl[Repr[_], S, A](
+    implicit def afl_as_fl[Repr[_], Obs[_], S, A](
         af: Repr[AffineFold[S, A]])(implicit
-        ev: FoldSym[Repr]): Repr[Fold[S, A]] =
+        ev: FoldSym[Repr, Obs]): Repr[Fold[S, A]] =
       ev.as_fl(af)
 
-    implicit def gt_as_fl[Repr[_], S, A](
+    implicit def gt_as_fl[Repr[_], Obs[_], S, A](
         gt: Repr[Getter[S, A]])(implicit
-        ev1: FoldSym[Repr], 
-        ev2: AffineFoldSym[Repr]): Repr[Fold[S, A]] =
+        ev1: FoldSym[Repr, Obs], 
+        ev2: AffineFoldSym[Repr, Obs]): Repr[Fold[S, A]] =
       ev1.as_fl(ev2.as_afl(gt))
   }
 

@@ -20,11 +20,11 @@ class OrgRTest extends FlatSpec with Matchers {
     Department("Sales", List(
       Employee("Fred", List(Task("call"))))))
 
-  object OrgLogicR extends OrgLogic[λ[x => x]]
+  object OrgLogicR extends OrgLogic[λ[x => x], λ[x => x]]
   import OrgLogicR.expertise
 
   "Optica" should "translate expertise into a fold" in {
-    expertise("abstract").getAll(data) shouldBe List("Quality", "Research")
+    expertise("abstract")(data) shouldBe List("Quality", "Research")
   }
 }
 
