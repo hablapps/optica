@@ -31,6 +31,8 @@ object Optica {
 
   implicit object TripletFunOptica extends interpreter.TripletFunSym
 
+  implicit object QuillOptica extends interpreter.QuillSym
+
   trait Syntax extends GetterSym.Syntax 
     with AffineFoldSym.Syntax with FoldSym.Syntax
 
