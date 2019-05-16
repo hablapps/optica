@@ -3,12 +3,11 @@ package optica
 package suite
 
 import org.scalatest._
-import io.getquill._
 
 import example._
 import model._
 
-import symantics.interpreter.{ctx, QObs, QGetAll}
+import symantics.interpreter._
 import ctx._
 
 class CoupleQuillTest extends FlatSpec with Matchers {
@@ -16,7 +15,7 @@ class CoupleQuillTest extends FlatSpec with Matchers {
   case class CoupleRel(her: String, him: String)
   case class PersonRel(name: String, age: Int)
 
-  val q: Quoted[Couples] = quote {
+  val q: Quoted[Query[Couple]] = quote {
     for {
       c <- query[CoupleRel]
       w <- query[PersonRel]
@@ -25,11 +24,13 @@ class CoupleQuillTest extends FlatSpec with Matchers {
     } yield Couple(Person(w.name, w.age), Person(m.name, m.age))
   }
 
-  object CoupleLogicQuill extends CoupleLogic[λ[x => x], QObs]
+  object CoupleLogicQuill extends CoupleLogic[QRep, QObs]
   import CoupleLogicQuill.differences
 
-  differences match {
-    case QGetAll(f) => f(q)
+  "Optica" should "translate differences into a Quill query" in {
+    println(CoupleLogicQuill.simplest match {
+      case QGetAll(f) => ctx.translate(f(quote { q }))
+    })
   }
 }
 

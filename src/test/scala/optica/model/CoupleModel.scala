@@ -43,6 +43,17 @@ object CoupleModel {
     val name = base(GetterType("name", "Person", "String"))
     val age = base(GetterType("age", "Person", "Int"))
   }
+
+  import symantics.interpreter._
+  import ctx._
+
+  implicit object QuillCoupleModel extends CoupleModel[QRep] {
+    val couples = QRepOpt(quote { q: Query[List[Couple]] => q.map(_.head) })
+    val her = QRepOpt(quote { q: Query[Couple] => q.map(_.her) })
+    val him = QRepOpt(quote { q: Query[Couple] => q.map(_.him) })
+    val name = QRepOpt(quote { q: Query[Person] => q.map(_.name) })
+    val age = QRepOpt(quote { q: Query[Person] => q.map(_.age) })
+  }
 }
 
 class CoupleLogic[Repr[_], Obs[_]](implicit 
@@ -50,6 +61,12 @@ class CoupleLogic[Repr[_], Obs[_]](implicit
     M: CoupleModel[Repr]) {
   import Optica.syntax._
   import O._, M._
+
+  def simplestFl: Repr[Fold[Couple, Int]] = 
+    // filtered((her >>> age) > (him >>> age)) >>>
+    /* (her >>> name) *** */ ((her >>> age) - (him >>> age))
+
+  def simplest: Obs[Couple => List[Int]] = simplestFl.getAll
 
   def differencesFl: Repr[Fold[Couples, (String, Int)]] =
     couples >>> filtered((her >>> age) > (him >>> age)) >>>
