@@ -47,12 +47,24 @@ object CoupleModel {
   import symantics.interpreter._
   import ctx._
 
+  case class CoupleRel(her: String, him: String)
+  case class PersonRel(name: String, age: Int)
+
+  val q: Quoted[Query[Couple]] = quote {
+    for {
+      c <- query[CoupleRel]
+      w <- query[PersonRel]
+      m <- query[PersonRel]
+      if c.her == w.name && c.him == m.name
+    } yield Couple(Person(w.name, w.age), Person(m.name, m.age))
+  }
+
   implicit object QuillCoupleModel extends CoupleModel[QRep] {
-    val couples = QRepOpt(quote { q: Query[List[Couple]] => q.map(_.head) })
-    val her = QRepOpt(quote { q: Query[Couple] => q.map(_.her) })
-    val him = QRepOpt(quote { q: Query[Couple] => q.map(_.him) })
-    val name = QRepOpt(quote { q: Query[Person] => q.map(_.name) })
-    val age = QRepOpt(quote { q: Query[Person] => q.map(_.age) })
+    val couples = QFold(quote { _: Query[Couples] => q })
+    val her = QGetter(quote { c: Couple => c.her })
+    val him = QGetter(quote { c: Couple => c.him })
+    val name = QGetter(quote { p: Person => p.name })
+    val age = QGetter(quote { p: Person => p.age })
   }
 }
 
@@ -62,11 +74,12 @@ class CoupleLogic[Repr[_], Obs[_]](implicit
   import Optica.syntax._
   import O._, M._
 
-  def simplestFl: Repr[Fold[Couple, Int]] = 
-    // filtered((her >>> age) > (him >>> age)) >>>
-    /* (her >>> name) *** */ ((her >>> age) - (him >>> age))
+  def simplestFl: Repr[Fold[Couples, (String, Int)]] = 
+    couples >>> 
+      filtered((her >>> age) > (him >>> age)) >>> 
+      (her >>> name) *** ((her >>> age) - (him >>> age))
 
-  def simplest: Obs[Couple => List[Int]] = simplestFl.getAll
+  def simplest: Obs[Couples => List[(String, Int)]] = simplestFl.getAll
 
   def differencesFl: Repr[Fold[Couples, (String, Int)]] =
     couples >>> filtered((her >>> age) > (him >>> age)) >>>
