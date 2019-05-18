@@ -36,6 +36,8 @@ trait RQuel extends Quel[λ[x => x]] {
 
   def exists[A](as: List[A]) = as.nonEmpty
 
+  def ifs[A](c: Boolean, t: A, e: A) = if (c) t else e
+
   def lam[A, B](f: A => B) = f
 
   def app[A, B](f: A => B)(a: A) = f(a)

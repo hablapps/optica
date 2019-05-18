@@ -35,6 +35,8 @@ trait Quel[Repr[_]] {
 
   def exists[A](f: Repr[List[A]]): Repr[Boolean]
 
+  def ifs[A](b: Repr[Boolean], t: Repr[A], e: Repr[A]): Repr[A]
+
   def lam[A, B](f: Repr[A] => Repr[B]): Repr[A => B]
 
   def app[A, B](f: Repr[A => B])(a: Repr[A]): Repr[B]
