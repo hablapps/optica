@@ -33,6 +33,9 @@ object Optica {
 
   implicit object QuillOptica extends interpreter.QuillSym
 
+  implicit def quelOptica[Repr[_]: quel.Quel]: interpreter.QuelSym[Repr] =
+    new interpreter.QuelSym[Repr]
+
   trait Syntax extends GetterSym.Syntax 
     with AffineFoldSym.Syntax with FoldSym.Syntax
 
