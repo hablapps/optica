@@ -16,7 +16,7 @@ class CoupleQuillTest extends FlatSpec with Matchers {
   import CoupleLogicQuill.differences
 
   "Optica" should "translate differences into a Quill query" in {
-    println(CoupleLogicQuill.simplest match {
+    println(differences match {
       case QGetAll(f) => ctx.translate(f(quote { query[Couple].map(List(_)) }))
     })
   }

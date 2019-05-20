@@ -43,6 +43,27 @@ object OrgModel {
     val tasks = entity(FoldType("tasks", "Employee", "Task"), "t")
     val tsk = base(GetterType("tsk", "Task", "String"))
   }
+
+  // import symantics.interpreter._
+  // import ctx._
+
+  // case class DepartmentRel(dpt: String)
+  // case class EmployeeRel(emp: String, dpt: String)
+  // case class TaskRel(tsk: String, emp: String)
+
+  // val q: Quoted[Query[Department]] = quote {
+  //   for {
+  //     d <- query[DepartmentRel]
+  //   } yield Department(d.dpt, 
+  //       for {
+  //         e <- query[EmployeeRel]
+  //         if e.dpt == d.dpt
+  //       } yield Employee(e.emp, 
+  //           for {
+  //             t <- query[TaskRel]
+  //             if t.emp == e.emp
+  //           } yield Task(t.tsk)))
+  // }
 }
 
 class OrgLogic[Repr[_], Obs[_]](implicit 

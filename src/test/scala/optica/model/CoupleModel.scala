@@ -66,6 +66,47 @@ object CoupleModel {
     val name = QGetter(quote { p: Person => p.name })
     val age = QGetter(quote { p: Person => p.age })
   }
+
+  import quel._
+
+  trait SymSchema[Repr[_]] {
+    def her(c: Repr[CoupleRel]): Repr[String]
+    def him(c: Repr[CoupleRel]): Repr[String]
+    def name(p: Repr[PersonRel]): Repr[String]
+    def age(p: Repr[PersonRel]): Repr[Int]
+  }
+
+  def differences[Repr[_]](implicit 
+      Q: Quel[Repr],
+      S: SymSchema[Repr]): Repr[List[(String, Int)]] = {
+    import Q._, S._
+    foreach(table[CoupleRel])(c =>
+    foreach(table[PersonRel])(m =>
+    foreach(table[PersonRel])(w =>
+    where(and(
+      and(equal(her(c), name(w)), equal(him(c), name(m))), 
+      greaterThan(age(w), age(m))))(
+    yields(product(
+      name(w), 
+      subtract(age(w), age(m))))))))
+  }
+
+  trait NestSchema[Repr[_]] {
+    def Person(name: Repr[String], age: Repr[Int]): Repr[Person]
+    def Couple(her: Repr[Person], him: Repr[Person]): Repr[Couple]
+  }
+
+  def model[Repr[_]](implicit 
+      Q: Quel[Repr],
+      S: SymSchema[Repr],
+      N: NestSchema[Repr]): Repr[List[Couple]] = {
+    import Q._, S._
+    foreach(table[CoupleRel])(c =>
+    foreach(table[PersonRel])(m =>
+    foreach(table[PersonRel])(w =>
+    where(and(equal(her(c), name(w)), equal(him(c), name(m))))(
+    yields(N.Couple(N.Person(name(w), age(w)), N.Person(name(m), age(m))))))))
+  }
 }
 
 class CoupleLogic[Repr[_], Obs[_]](implicit 
@@ -73,13 +114,6 @@ class CoupleLogic[Repr[_], Obs[_]](implicit
     M: CoupleModel[Repr]) {
   import Optica.syntax._
   import O._, M._
-
-  def simplestFl: Repr[Fold[Couples, (String, Int)]] = 
-    couples >>> 
-      filtered((her >>> age) > (him >>> age)) >>> 
-      (her >>> name) *** ((her >>> age) - (him >>> age))
-
-  def simplest: Obs[Couples => List[(String, Int)]] = simplestFl.getAll
 
   def differencesFl: Repr[Fold[Couples, (String, Int)]] =
     couples >>> filtered((her >>> age) > (him >>> age)) >>>

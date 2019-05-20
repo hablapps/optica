@@ -36,9 +36,13 @@ trait QuillGetterSym extends GetterSym[QRep, QObs] {
     case (QGetter(f), QGetter(g)) => QGetter(quote { s: S => (f(s), g(s)) })
   }
 
-  def id_gt[S] = ??? // QGetter(quote { s: S => liftQuery(List(s)) })
+  def id_gt[S] = QGetter(quote { s: S => s })
 
-  def like[S, A: Base](a: A) = ???
+  def like[S, A](a: A)(implicit B: Base[A]) = B match {
+    case IntWitness => QGetter[S, Int](quote { _: S => a })
+    case StringWitness => QGetter[S, String](quote { _: S => a })
+    case BooleanWitness => QGetter[S, Boolean](quote { _: S => a })
+  }
 
   def not[S](b: QRep[Getter[S, Boolean]]) = b match {
     case QGetter(f) => QGetter(quote { s: S => !f(s) })
@@ -47,10 +51,14 @@ trait QuillGetterSym extends GetterSym[QRep, QObs] {
   def equal[S, A](
       x: QRep[Getter[S, A]],
       y: QRep[Getter[S, A]])(implicit
-      B: Base[A]) = B match {
-    case IntWitness => ??? // quote { Getter[S, Boolean](s => x.get(s) == y.get(s)) }
-    case StringWitness => ??? // quote { Getter[S, Boolean](s => x.get(s) == y.get(s)) }
-    case BooleanWitness => ??? // quote { Getter[S, Boolean](s => x.get(s) == y.get(s)) }
+      B: Base[A]) = {
+    val QGetter(f) = x
+    val QGetter(g) = y
+    B match {
+      case IntWitness => QGetter(quote { s: S => f(s) == g(s) })
+      case StringWitness => QGetter(quote { (s: S) => f(s) == g(s) })
+      case BooleanWitness => QGetter(quote { (s: S) => f(s) == g(s) })
+    }
   }
 
   def greaterThan[S](
@@ -70,7 +78,7 @@ trait QuillGetterSym extends GetterSym[QRep, QObs] {
 
 trait QuillAffineFoldSym extends AffineFoldSym[QRep, QObs] {
 
-  def id_af[S] = ??? // Category[AffineFold].id
+  def id_af[S] = QAffine(quote { q: Query[S] => q })
 
   def comp_af[S, A, B](
       u: QRep[AffineFold[S, A]], 
@@ -101,7 +109,7 @@ trait QuillAffineFoldSym extends AffineFoldSym[QRep, QObs] {
 
 trait QuillFoldSym extends FoldSym[QRep, QObs] {
 
-  def id_fl[S] = ??? // Category[Fold].id
+  def id_fl[S] = QFold(quote { q: Query[S] => q })
 
   def comp_fl[S, A, B](
       u: QRep[Fold[S, A]], 
@@ -111,7 +119,13 @@ trait QuillFoldSym extends FoldSym[QRep, QObs] {
     })
   }
 
-  def nonEmpty[S, A](fl: QRep[Fold[S, A]]) = ??? // fl.nonEmpty
+  def nonEmpty[S, A](fl: QRep[Fold[S, A]]) = fl match {
+    case QFold(f) => QGetter(quote { s: S => 
+      // XXX: extremely ugly workaround to do monadic `pure` for `Query`
+      f(query[Empty].map(_ => s)).size > 0 
+    })
+  }
+  case class Empty()
 
   def as_fl[S, A](afl: QRep[AffineFold[S, A]]) = afl match {
     case QAffine(f) => QFold(f)
