@@ -74,15 +74,38 @@ object CoupleModel {
     def him(c: Repr[CoupleRel]): Repr[String]
     def name(p: Repr[PersonRel]): Repr[String]
     def age(p: Repr[PersonRel]): Repr[Int]
+    def table_couple: Repr[List[CoupleRel]]
+    def table_person: Repr[List[PersonRel]]
+  }
+
+  object SymSchema {
+    
+    implicit object RSymSchema extends SymSchema[λ[x => x]] {
+      def her(c: CoupleRel) = c.her
+      def him(c: CoupleRel) = c.him
+      def name(p: PersonRel) = p.name
+      def age(p: PersonRel) = p.age
+      def table_person = List(
+        PersonRel("Alex", 60), 
+        PersonRel("Bert", 55), 
+        PersonRel("Cora", 33),
+        PersonRel("Drew", 31),
+        PersonRel("Edna", 21),
+        PersonRel("Fred", 60))
+      def table_couple = List(
+        CoupleRel("Alex", "Bert"),
+        CoupleRel("Cora", "Drew"),
+        CoupleRel("Edna", "Fred"))
+    }
   }
 
   def differences[Repr[_]](implicit 
       Q: Quel[Repr],
       S: SymSchema[Repr]): Repr[List[(String, Int)]] = {
     import Q._, S._
-    foreach(table[CoupleRel])(c =>
-    foreach(table[PersonRel])(m =>
-    foreach(table[PersonRel])(w =>
+    foreach(table_couple)(c =>
+    foreach(table_person)(m =>
+    foreach(table_person)(w =>
     where(and(
       and(equal(her(c), name(w)), equal(him(c), name(m))), 
       greaterThan(age(w), age(m))))(
@@ -92,8 +115,24 @@ object CoupleModel {
   }
 
   trait NestSchema[Repr[_]] {
-    def Person(name: Repr[String], age: Repr[Int]): Repr[Person]
     def Couple(her: Repr[Person], him: Repr[Person]): Repr[Couple]
+    def Person(name: Repr[String], age: Repr[Int]): Repr[Person]
+    def her(c: Repr[Couple]): Repr[Person]
+    def him(c: Repr[Couple]): Repr[Person]
+    def name(p: Repr[Person]): Repr[String]
+    def age(p: Repr[Person]): Repr[Int]
+  }
+
+  object NestSchema {
+    
+    implicit object RNestSchema extends NestSchema[λ[x => x]] {
+      def Person(name: String, age: Int) = example.Person(name, age)
+      def Couple(her: Person, him: Person) = example.Couple(her, him)
+      def her(c: Couple) = c.her
+      def him(c: Couple) = c.him
+      def name(p: Person) = p.name
+      def age(p: Person) = p.age
+    }
   }
 
   def model[Repr[_]](implicit 
@@ -101,11 +140,22 @@ object CoupleModel {
       S: SymSchema[Repr],
       N: NestSchema[Repr]): Repr[List[Couple]] = {
     import Q._, S._
-    foreach(table[CoupleRel])(c =>
-    foreach(table[PersonRel])(m =>
-    foreach(table[PersonRel])(w =>
+    foreach(table_couple)(c =>
+    foreach(table_person)(m =>
+    foreach(table_person)(w =>
     where(and(equal(her(c), name(w)), equal(him(c), name(m))))(
     yields(N.Couple(N.Person(name(w), age(w)), N.Person(name(m), age(m))))))))
+  }
+
+  implicit def quelCoupleModel[Repr[_]](implicit 
+      Q: Quel[Repr],
+      N: NestSchema[Repr]) = new CoupleModel[Down[Repr, ?]] {
+    import Q._
+    val couples = DownFold(lam(identity))
+    val her = DownGetter(lam(c => N.her(c)))
+    val him = DownGetter(lam(c => N.him(c)))
+    val name = DownGetter(lam(p => N.name(p)))
+    val age = DownGetter(lam(p => N.age(p)))
   }
 }
 

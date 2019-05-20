@@ -3,8 +3,6 @@ package quel
 
 trait Quel[Repr[_]] {
 
-  def table[A]: Repr[List[A]]
-
   def int(i: Int): Repr[Int]
 
   def bool(b: Boolean): Repr[Boolean]

@@ -4,8 +4,6 @@ package interpreter
 
 trait RQuel extends Quel[λ[x => x]] {
 
-  def table[A]: List[A] = ???
-
   def int(i: Int) = i
 
   def bool(b: Boolean) = b
