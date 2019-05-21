@@ -49,5 +49,7 @@ trait Quel[Repr[_]] {
 object Quel {
 
   implicit object RQuel extends interpreter.R
+
+  implicit object ToStrinQuel extends interpreter.ToString
 }
 

@@ -97,6 +97,15 @@ object CoupleModel {
         CoupleRel("Cora", "Drew"),
         CoupleRel("Edna", "Fred"))
     }
+
+    implicit object ToStringSchema extends SymSchema[λ[x => Int => String]] {
+      def her(c: Int => String) = i => s"${c(i)}.her"
+      def him(c: Int => String) = i => s"${c(i)}.him"
+      def name(p: Int => String) = i => s"${p(i)}.name"
+      def age(p: Int => String) = i => s"${p(i)}.age"
+      def table_person = _ => "table_person"
+      def table_couple = _ => "table_couple"
+    }
   }
 
   def differences[Repr[_]](implicit 
@@ -132,6 +141,19 @@ object CoupleModel {
       def him(c: Couple) = c.him
       def name(p: Person) = p.name
       def age(p: Person) = p.age
+    }
+
+    implicit object ToStringNestSchema extends NestSchema[λ[x => Int => String]] {
+      def Person(name: Int => String, age: Int => String) = { i =>
+        s"Person(${name(i)}, ${age(i)})"
+      }
+      def Couple(her: Int => String, him: Int => String) = { i =>
+        s"Couple(${her(i)}, ${him(i)})"
+      }
+      def her(c: Int => String) = i => s"${c(i)}.her"
+      def him(c: Int => String) = i => s"${c(i)}.him"
+      def name(p: Int => String) = i => s"${p(i)}.name"
+      def age(p: Int => String) = i => s"${p(i)}.age"
     }
   }
 

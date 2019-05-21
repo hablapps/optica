@@ -111,6 +111,17 @@ object OrgModel {
         TaskRel("design", "Edna"),
         TaskRel("call", "Fred"))
     }
+
+    implicit object ToStringSymSchema extends SymSchema[λ[x => Int => String]] {
+      def dpt(d: Int => String) = i => s"${d(i)}.dpt"
+      def emp(e: Int => String) = i => s"${e(i)}.emp"
+      def dpt_k(d: Int => String) = i => s"${d(i)}.dpt"
+      def tsk(t: Int => String) = i => s"${t(i)}.tsk"
+      def emp_k(t: Int => String) = i => s"${t(i)}.emp"
+      def table_department = _ => "table_department"
+      def table_employee = _ => "table_employee"
+      def table_task = _ => "table_task"
+    }
   }
 
   trait NestSchema[Repr[_]] {
@@ -141,6 +152,23 @@ object OrgModel {
       def emp(e: Employee) = e.emp
       def tasks(e: Employee) = e.tasks
       def tsk(t: Task) = t.tsk
+    }
+
+    implicit object ToStringNestSchema extends NestSchema[λ[x => Int => String]] {
+      def Department(dpt: Int => String, employees: Int => String) = { i =>
+        s"Department(${dpt(i)}, ${employees(i)})"
+      }
+      def Employee(emp: Int => String, tasks: Int => String) = { i =>
+        s"Employee(${emp(i)}, ${tasks(i)})"
+      }
+      def Task(tsk: Int => String) = { i =>
+        s"Task(${tsk(i)})"
+      }
+      def dpt(d: Int => String) = i => s"${d(i)}.dpt"
+      def employees(d: Int => String) = i => s"${d(i)}.employees"
+      def emp(e: Int => String) = i => s"${e(i)}.emp"
+      def tasks(e: Int => String) = i => s"${e(i)}.tasks"
+      def tsk(t: Int => String) = i => s"${t(i)}.tsk"
     }
   }
 
