@@ -91,7 +91,6 @@ class QuelSym[Repr[_]](implicit Q: Quel[Repr])
     case DownGetter(f) => DownAffine(lam(s => some(app(f)(s))))
   }
 
-  // Ouch, this is what we sacrifice by using the current `DownAffine`!
   def getOpt[S, A](af: Down[Repr, AffineFold[S, A]]) = af match {
     case DownAffine(f) => f
   }
