@@ -38,6 +38,12 @@ trait Quel[Repr[_]] {
   def lam[A, B](f: Repr[A] => Repr[B]): Repr[A => B]
 
   def app[A, B](f: Repr[A => B])(a: Repr[A]): Repr[B]
+
+  def some[A](a: Repr[A]): Repr[Option[A]]
+
+  def none[A]: Repr[Option[A]]
+
+  def ofold[A, B](oa: Repr[Option[A]])(z: Repr[B], f: Repr[A => B]): Repr[B]
 }
 
 object Quel {

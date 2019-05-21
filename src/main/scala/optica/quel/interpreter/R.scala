@@ -39,6 +39,15 @@ trait RQuel extends Quel[λ[x => x]] {
   def lam[A, B](f: A => B) = f
 
   def app[A, B](f: A => B)(a: A) = f(a)
+
+  def some[A](a: A) = Some(a)
+
+  def none[A] = None
+
+  def ofold[A, B](oa: Option[A])(z: B, f: A => B) = oa match {
+    case None => z
+    case Some(a) => f(a)
+  }
 }
 
 class R extends RQuel

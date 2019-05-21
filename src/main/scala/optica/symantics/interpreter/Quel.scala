@@ -9,7 +9,7 @@ import Base._
 sealed abstract class Down[Repr[_], A]
 case class DownGetter[Repr[_], S, A](f: Repr[S => A]) 
   extends Down[Repr, Getter[S, A]]
-case class DownAffine[Repr[_], S, A](f: Repr[S => List[A]]) 
+case class DownAffine[Repr[_], S, A](f: Repr[S => Option[A]]) 
   extends Down[Repr, AffineFold[S, A]]
 case class DownFold[Repr[_], S, A](f: Repr[S => List[A]]) 
   extends Down[Repr, Fold[S, A]]
@@ -74,31 +74,31 @@ class QuelSym[Repr[_]](implicit Q: Quel[Repr])
 
   /* Affine Fold */
 
- def id_af[S] = DownAffine(lam(s => yields(s)))
+ def id_af[S] = DownAffine(lam(some))
 
   def comp_af[S, A, B](
       u: Down[Repr, AffineFold[S, A]], 
       d: Down[Repr, AffineFold[A, B]]) = (u, d) match {
     case (DownAffine(f), DownAffine(g)) =>
-      DownAffine(lam(s => 
-        foreach(app(f)(s))(a =>
-          foreach(app(g)(a))(b => yields(b)))))
+      DownAffine(lam(s => ofold(app(f)(s))(none, lam(app(g)))))
   }
 
   def filtered[S](p: Down[Repr, Getter[S, Boolean]]) = p match {
-    case DownGetter(f) => DownAffine(lam(s => ifs(app(f)(s), yields(s), nil)))
+    case DownGetter(f) => DownAffine(lam(s => ifs(app(f)(s), some(s), none)))
   }
 
   def as_afl[S, A](gt: Down[Repr, Getter[S, A]]) = gt match {
-    case DownGetter(f) => DownAffine(lam(s => yields(app(f)(s))))
+    case DownGetter(f) => DownAffine(lam(s => some(app(f)(s))))
   }
 
   // Ouch, this is what we sacrifice by using the current `DownAffine`!
-  def getOpt[S, A](af: Down[Repr, AffineFold[S, A]]) = ???
+  def getOpt[S, A](af: Down[Repr, AffineFold[S, A]]) = af match {
+    case DownAffine(f) => f
+  }
 
   /* Fold */
 
- def id_fl[S] = DownFold(lam(s => yields(s)))
+ def id_fl[S] = DownFold(lam(yields))
 
   def comp_fl[S, A, B](
       u: Down[Repr, Fold[S, A]], 
@@ -106,7 +106,7 @@ class QuelSym[Repr[_]](implicit Q: Quel[Repr])
     case (DownFold(f), DownFold(g)) =>
       DownFold(lam(s => 
         foreach(app(f)(s))(a =>
-          foreach(app(g)(a))(b => yields(b)))))
+          foreach(app(g)(a))(yields))))
   }
 
   def nonEmpty[S, A](fl: Down[Repr, Fold[S, A]]) = fl match {
@@ -114,7 +114,8 @@ class QuelSym[Repr[_]](implicit Q: Quel[Repr])
   }
 
   def as_fl[S, A](afl: Down[Repr, AffineFold[S, A]]) = afl match {
-    case DownAffine(f) => DownFold(f)
+    case DownAffine(f) => 
+      DownFold(lam(s => ofold(app(f)(s))(nil, lam(yields))))
   }
 
   def getAll[S, A](fl: Down[Repr, Fold[S, A]]) = fl match {

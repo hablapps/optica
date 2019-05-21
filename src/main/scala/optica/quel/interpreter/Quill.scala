@@ -43,6 +43,7 @@ trait QuillQuel extends Quel[QuillRepr] {
 
   def yields[A](a: QuillRepr[A]) = a match {
     case QuillT(a) => ???
+    case _ => throw new Error("should never happen")
   }
 
   def product[A, B](a: QuillRepr[A], b: QuillRepr[B]) = (a, b) match {
@@ -103,6 +104,16 @@ trait QuillQuel extends Quel[QuillRepr] {
     case (QuillT(g), QuillT(x)) => QuillT(quote { g(x) })
     case _ => throw new Error("should never happen")
   }
+
+  def some[A](a: QuillRepr[A]) = ???
+
+  def none[A] = ???
+
+  def ofold[A, B](
+      oa: QuillRepr[Option[A]])(
+      z: QuillRepr[B], 
+      f: QuillRepr[A => B]) =
+    ???
 }
 
 class Quill extends QuillQuel
