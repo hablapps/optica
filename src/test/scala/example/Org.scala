@@ -1,4 +1,3 @@
-package dev.habla
 package example
 
 case class Department(dpt: String, employees: List[Employee])

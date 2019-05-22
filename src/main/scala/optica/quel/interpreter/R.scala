@@ -1,4 +1,4 @@
-package dev.habla.optica
+package optica
 package quel
 package interpreter
 

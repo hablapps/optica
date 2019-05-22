@@ -1,4 +1,3 @@
-package dev.habla
 
 package object `example` {
 

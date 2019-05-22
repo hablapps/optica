@@ -1,4 +1,4 @@
-package dev.habla.optica
+package optica
 package sql
 
 case class SSelect(select: SqlSelect, from: SqlFrom, where: Option[SqlExp]) {

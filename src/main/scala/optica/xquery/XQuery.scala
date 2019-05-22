@@ -1,4 +1,4 @@
-package dev.habla.optica
+package optica
 package xquery
 
 sealed abstract class XQuery {

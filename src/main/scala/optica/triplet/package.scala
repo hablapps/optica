@@ -1,4 +1,4 @@
-package dev.habla.optica
+package optica
 
 import scalaz._
 import sql._

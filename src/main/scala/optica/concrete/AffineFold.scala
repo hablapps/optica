@@ -1,4 +1,4 @@
-package dev.habla.optica
+package optica
 package concrete
 
 import scalaz._, Scalaz._, Kleisli._

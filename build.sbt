@@ -1,6 +1,6 @@
 name := "optica"
 
-organization := "dev.habla"
+organization := "dev.anonymous"
 
 scalaVersion := "2.12.8"
 
