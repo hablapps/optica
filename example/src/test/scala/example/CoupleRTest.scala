@@ -1,9 +1,9 @@
 package example
-package suite
+package test
 
-import org.scalatest._
+import _root_.org.scalatest._
 import example._
-import model._
+import couple._
 
 class CoupleRTest extends FlatSpec with Matchers {
 
@@ -12,7 +12,7 @@ class CoupleRTest extends FlatSpec with Matchers {
     Couple(Person("Cora", 33), Person("Drew", 31)),
     Couple(Person("Edna", 21), Person("Fred", 60)))
 
-  object CoupleLogicR extends CoupleLogic[λ[x => x], λ[x => x]]
+  object CoupleLogicR extends Logic[λ[x => x], λ[x => x]]
   import CoupleLogicR.differences
 
   "Optica" should "translate differences into a fold" in {

@@ -1,9 +1,9 @@
 package example
-package suite
+package test
 
-import org.scalatest._
+import _root_.org.scalatest._
 import example._
-import model._
+import org._
 
 class OrgRTest extends FlatSpec with Matchers {
 
@@ -19,7 +19,7 @@ class OrgRTest extends FlatSpec with Matchers {
     Department("Sales", List(
       Employee("Fred", List(Task("call"))))))
 
-  object OrgLogicR extends OrgLogic[λ[x => x], λ[x => x]]
+  object OrgLogicR extends Logic[λ[x => x], λ[x => x]]
   import OrgLogicR.expertise
 
   "Optica" should "translate expertise into a fold" in {

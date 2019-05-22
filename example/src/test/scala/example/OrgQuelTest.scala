@@ -1,29 +1,30 @@
 package example
-package suite
+package test
 
+import optica._
 import symantics.interpreter.Down
 import symantics.Optica.quelOptica
 
-import org.scalatest._
-import model._
+import _root_.org.scalatest._
+import org._, org.interpreter.Nested
 
 class OrgQuelTest extends FlatSpec with Matchers {
 
   implicit val _1 = symantics.Optica.quelOptica[λ[x => x]]
-  implicit val _2 = OrgModel.quelOrgModel[λ[x => x]]
+  implicit val _2 = Model.quelModel[λ[x => x]]
 
-  object OrgLogicQuel extends OrgLogic[Down[λ[x => x], ?], λ[x => x]]
+  object OrgLogicQuel extends Logic[Down[λ[x => x], ?], λ[x => x]]
   import OrgLogicQuel.expertise
 
   implicit val _3 = symantics.Optica.quelOptica[λ[x => Int => String]]
-  implicit val _4 = OrgModel.quelOrgModel[λ[x => Int => String]]
+  implicit val _4 = Model.quelModel[λ[x => Int => String]]
   val _5 = implicitly[quel.Quel[λ[x => Int => String]]]
 
   object OrgLogicQuelShow 
-    extends OrgLogic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
+    extends Logic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
   import OrgLogicQuelShow.{expertise => expertiseShow}
 
-  _5.app(expertiseShow("abstract"))(OrgModel.model[λ[x => Int => String]])(0)
+  _5.app(expertiseShow("abstract"))(Nested[λ[x => Int => String]])(0)
 
   // generates ...
   //
@@ -45,7 +46,7 @@ class OrgQuelTest extends FlatSpec with Matchers {
   // for (x2 <- table_task) where x1.emp == x2.emp yield Task(x2.tsk))))
 
   "Optica" should "translate differences into a fold" in {
-    expertise("abstract")(OrgModel.model[λ[x => x]]) shouldBe 
+    expertise("abstract")(Nested[λ[x => x]]) shouldBe 
       List("Quality", "Research")
   }
 }

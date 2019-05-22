@@ -1,29 +1,30 @@
 package example
-package suite
+package test
 
+import optica._
 import symantics.interpreter.Down
 import symantics.Optica.quelOptica
 
-import org.scalatest._
-import model._
+import _root_.org.scalatest._
+import couple._, couple.interpreter.Nested
 
 class CoupleQuelTest extends FlatSpec with Matchers {
 
   implicit val _1 = symantics.Optica.quelOptica[λ[x => x]]
-  implicit val _2 = CoupleModel.quelCoupleModel[λ[x => x]]
+  implicit val _2 = Model.quelModel[λ[x => x]]
 
-  object CoupleLogicQuel extends CoupleLogic[Down[λ[x => x], ?], λ[x => x]]
+  object CoupleLogicQuel extends Logic[Down[λ[x => x], ?], λ[x => x]]
   import CoupleLogicQuel.differences
 
   implicit val _3 = symantics.Optica.quelOptica[λ[x => Int => String]]
-  implicit val _4 = CoupleModel.quelCoupleModel[λ[x => Int => String]]
+  implicit val _4 = Model.quelModel[λ[x => Int => String]]
   val _5 = implicitly[quel.Quel[λ[x => Int => String]]]
 
   object CoupleLogicQuelShow 
-    extends CoupleLogic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
+    extends Logic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
   import CoupleLogicQuelShow.{differences => differencesShow}
 
-  _5.app(differencesShow)(CoupleModel.model[λ[x => Int => String]])(0)
+  _5.app(differencesShow)(Nested[λ[x => Int => String]])(0)
 
   // generates...
   //
@@ -40,7 +41,7 @@ class CoupleQuelTest extends FlatSpec with Matchers {
   // Couple(Person(x2.name, x2.age), Person(x1.name, x1.age)))
 
   "Optica" should "translate differences into a fold" in {
-    differences(CoupleModel.model[λ[x => x]]) shouldBe List("Alex" -> 5, "Cora" -> 2) 
+    differences(Nested[λ[x => x]]) shouldBe List("Alex" -> 5, "Cora" -> 2) 
   }
 }
 

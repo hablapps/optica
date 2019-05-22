@@ -1,13 +1,14 @@
 package example
-package suite
+package test
 
-import org.scalatest._
+import _root_.org.scalatest._
+import optica._
 import xquery._
-import model._
+import couple._
 
 class CoupleXQueryTest extends FlatSpec with Matchers {
 
-  object CoupleLogicXQuery extends CoupleLogic[λ[x => XQuery], λ[x => XQuery]]
+  object CoupleLogicXQuery extends Logic[λ[x => XQuery], λ[x => XQuery]]
   import CoupleLogicXQuery.differences
 
   "Optica" should "translate differences into an XQuery expression" in {

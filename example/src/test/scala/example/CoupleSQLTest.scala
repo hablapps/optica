@@ -1,18 +1,19 @@
 package example
-package suite
+package test
 
-import org.scalatest._
+import _root_.org.scalatest._
 import scalaz._, Scalaz._
 
+import optica._
 import sql._
 import triplet._
-import model._
+import couple._
 
 class CoupleSQLTest extends FlatSpec with Matchers {
 
   type Obs[_] = TypeNme ==>> FieldNme => Error \/ SSelect
 
-  object CoupleLogicTripletFun extends CoupleLogic[λ[x => TripletFun], Obs]
+  object CoupleLogicTripletFun extends Logic[λ[x => TripletFun], Obs]
   import CoupleLogicTripletFun.differences
 
   "Optica" should "translate difference into a SELECT statement" in {

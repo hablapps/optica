@@ -1,18 +1,19 @@
 package example
-package suite
+package test
 
-import org.scalatest._
+import _root_.org.scalatest._
 import scalaz._, Scalaz._
 
+import optica._
 import sql._
 import triplet._
-import model._
+import org._
 
 class OrgSQLTest extends FlatSpec with Matchers {
 
   type Obs[_] = TypeNme ==>> FieldNme => Error \/ SSelect
 
-  object OrgLogicTripletFun extends OrgLogic[λ[x => TripletFun], Obs]
+  object OrgLogicTripletFun extends Logic[λ[x => TripletFun], Obs]
   import OrgLogicTripletFun.expertise
 
   val keys = ==>>("Department" -> "dpt", "Employee" -> "emp")
