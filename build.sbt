@@ -18,9 +18,15 @@ lazy val commonSettings = Seq(
       "com.github.julien-truffaut" %% "monocle-core" % "1.5.0",
       "io.getquill" %% "quill-sql" % "3.1.0",
       "org.scalactic" %% "scalactic" % "3.0.5", 
-      "org.scalatest" %% "scalatest" % "3.0.5" % "test")
+      "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+      "org.xerial" % "sqlite-jdbc" % "3.27.2.1" % "test",
+      "org.tpolecat" %% "doobie-core"      % "0.6.0" % "test",
+      "org.tpolecat" %% "doobie-hikari"    % "0.6.0" % "test", // HikariCP transactor.
+      "org.tpolecat" %% "doobie-specs2"    % "0.6.0" % "test", // Specs2 support for typechecking statements.
+      "org.tpolecat" %% "doobie-scalatest" % "0.6.0" % "test",  // ScalaTest support for typechecking statements.
+    ),
+  parallelExecution in Test := false
 )
-
 lazy val core = project
   .settings(
     name := "optica-core",
