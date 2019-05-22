@@ -1,4 +1,4 @@
-package optica
+package example
 package suite
 
 import symantics.interpreter.Down
