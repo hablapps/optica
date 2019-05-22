@@ -2,9 +2,7 @@ package optica
 package symantics
 package interpreter
 
-import scalaz._, Scalaz._
 import concrete._
-import CategoryWithProduct.syntax._, Getter.syntax._, Fold.syntax._
 import Base._
 import io.getquill._
 
