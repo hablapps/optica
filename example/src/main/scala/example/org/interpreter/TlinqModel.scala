@@ -1,14 +1,14 @@
 package example.org
 package interpreter
 
-import optica.quel._
+import optica.tlinq._
 import optica.symantics.interpreter._
 
 case class DepartmentRel(dpt: String)
 case class EmployeeRel(emp: String, dpt: String)
 case class TaskRel(tsk: String, emp: String)
 
-class QuelModel[Repr[_]](implicit Q: Quel[Repr], N: Nested[Repr]) 
+class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr]) 
     extends Model[Down[Repr, ?]] {
   import Q._
   def departments = DownFold(lam(identity))
@@ -93,7 +93,7 @@ trait Nested[Repr[_]] {
 object Nested {
 
   def apply[Repr[_]](implicit
-      Q: Quel[Repr],
+      Q: Tlinq[Repr],
       S: Schema[Repr],
       N: Nested[Repr]): Repr[List[Department]] = {
     import Q._, S._

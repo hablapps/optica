@@ -1,8 +1,8 @@
 package optica
-package quel
+package tlinq
 package interpreter
 
-trait ToStringQuel extends Quel[λ[x => Int => String]] {
+trait ToStringTlinq extends Tlinq[λ[x => Int => String]] {
 
   def int(i: Int) = _ => s"$i"
 
@@ -77,5 +77,5 @@ trait ToStringQuel extends Quel[λ[x => Int => String]] {
   }
 }
 
-class ToString extends ToStringQuel
+class ToString extends ToStringTlinq
 

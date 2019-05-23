@@ -2,7 +2,7 @@ package optica
 package symantics
 package interpreter
 
-import quel._
+import tlinq._
 import concrete._
 import Base._
 
@@ -14,7 +14,7 @@ case class DownAffine[Repr[_], S, A](f: Repr[S => Option[A]])
 case class DownFold[Repr[_], S, A](f: Repr[S => List[A]]) 
   extends Down[Repr, Fold[S, A]]
 
-class QuelSym[Repr[_]](implicit Q: Quel[Repr]) 
+class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr]) 
     extends Optica[Down[Repr, ?], Repr] {
   import Q._
 

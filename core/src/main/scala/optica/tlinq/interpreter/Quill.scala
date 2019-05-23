@@ -1,5 +1,5 @@
 package optica
-package quel
+package tlinq
 package interpreter
 
 import symantics.interpreter.ctx._
@@ -8,7 +8,7 @@ sealed abstract class QuillRepr[A]
 case class QuillT[A](a: Quoted[A]) extends QuillRepr[A]
 case class QuillL[A](a: Quoted[Query[A]]) extends QuillRepr[List[A]]
 
-trait QuillQuel extends Quel[QuillRepr] {
+trait QuillTlinq extends Tlinq[QuillRepr] {
 
   def int(i: Int) = QuillT(quote { i })
 
@@ -116,5 +116,5 @@ trait QuillQuel extends Quel[QuillRepr] {
     ???
 }
 
-class Quill extends QuillQuel
+class Quill extends QuillTlinq
 

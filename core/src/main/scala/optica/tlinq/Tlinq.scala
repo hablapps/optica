@@ -1,7 +1,7 @@
 package optica
-package quel
+package tlinq
 
-trait Quel[Repr[_]] {
+trait Tlinq[Repr[_]] {
 
   def int(i: Int): Repr[Int]
 
@@ -46,10 +46,10 @@ trait Quel[Repr[_]] {
   def ofold[A, B](oa: Repr[Option[A]])(z: Repr[B], f: Repr[A => B]): Repr[B]
 }
 
-object Quel {
+object Tlinq {
 
-  implicit object RQuel extends interpreter.R
+  implicit object RTlinq extends interpreter.R
 
-  implicit object ToStrinQuel extends interpreter.ToString
+  implicit object ToStrinTlinq extends interpreter.ToString
 }
 

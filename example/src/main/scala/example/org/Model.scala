@@ -27,9 +27,9 @@ object Model {
 
   implicit object TripletFunModel extends interpreter.TripletFunModel
 
-  import interpreter.{QuelModel, Nested}
-  import optica.quel._
+  import interpreter.{TlinqModel, Nested}
+  import optica.tlinq._
 
-  implicit def quelModel[Repr[_] : Quel : Nested] = new QuelModel[Repr]
+  implicit def tlinqModel[Repr[_] : Tlinq : Nested] = new TlinqModel[Repr]
 }
 
