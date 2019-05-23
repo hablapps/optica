@@ -2,7 +2,7 @@ package example
 package test
 
 import optica._
-import symantics.interpreter.Down
+import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
@@ -13,7 +13,7 @@ class OrgTlinqTest extends FlatSpec with Matchers {
   implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
   implicit val _2 = Model.tlinqModel[λ[x => x]]
 
-  object OrgLogicTlinq extends Logic[Down[λ[x => x], ?], λ[x => x]]
+  object OrgLogicTlinq extends Logic[Wrap[λ[x => x], ?], λ[x => x]]
   import OrgLogicTlinq.expertise
 
   implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]
@@ -21,7 +21,7 @@ class OrgTlinqTest extends FlatSpec with Matchers {
   val _5 = implicitly[tlinq.Tlinq[λ[x => Int => String]]]
 
   object OrgLogicTlinqShow 
-    extends Logic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
+    extends Logic[Wrap[λ[x => Int => String], ?], λ[x => Int => String]]
   import OrgLogicTlinqShow.{expertise => expertiseShow}
 
   _5.app(expertiseShow("abstract"))(Nested[λ[x => Int => String]])(0)

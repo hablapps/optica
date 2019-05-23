@@ -9,13 +9,13 @@ case class EmployeeRel(emp: String, dpt: String)
 case class TaskRel(tsk: String, emp: String)
 
 class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr]) 
-    extends Model[Down[Repr, ?]] {
+    extends Model[Wrap[Repr, ?]] {
   import Q._
-  def departments = DownFold(lam(identity))
-  def dpt = DownGetter(lam(d => N.dpt(d)))
-  def employees = DownFold(lam(d => N.employees(d)))
-  def tasks = DownFold(lam(e => N.tasks(e)))
-  def tsk = DownGetter(lam(t => N.tsk(t)))
+  def departments = WrapFold(lam(identity))
+  def dpt = WrapGetter(lam(d => N.dpt(d)))
+  def employees = WrapFold(lam(d => N.employees(d)))
+  def tasks = WrapFold(lam(e => N.tasks(e)))
+  def tsk = WrapGetter(lam(t => N.tsk(t)))
 }
 
 trait Schema[Repr[_]] {
@@ -95,7 +95,7 @@ object Nested {
   def apply[Repr[_]](implicit
       Q: Tlinq[Repr],
       S: Schema[Repr],
-      N: Nested[Repr]): Repr[List[Department]] = {
+      N: Nested[Repr]): Repr[Org] = {
     import Q._, S._
     foreach(table_department)(d =>
         yields(N.Department(dpt(d), foreach(table_employee)(e =>

@@ -8,18 +8,18 @@ case class CoupleRel(her: String, him: String)
 case class PersonRel(name: String, age: Int)
 
 class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr]) 
-    extends Model[Down[Repr, ?]] {
+    extends Model[Wrap[Repr, ?]] {
   import Q._
 
-  val couples = DownFold(lam(identity))
+  val couples = WrapFold(lam(identity))
 
-  val her = DownGetter(lam(c => N.her(c)))
+  val her = WrapGetter(lam(c => N.her(c)))
 
-  val him = DownGetter(lam(c => N.him(c)))
+  val him = WrapGetter(lam(c => N.him(c)))
 
-  val name = DownGetter(lam(p => N.name(p)))
+  val name = WrapGetter(lam(p => N.name(p)))
 
-  val age = DownGetter(lam(p => N.age(p)))
+  val age = WrapGetter(lam(p => N.age(p)))
 }
       
 trait Schema[Repr[_]] {
