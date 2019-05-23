@@ -3,26 +3,26 @@ package test
 
 import optica._
 import symantics.interpreter.Down
-import symantics.Optica.quelOptica
+import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
 import couple._, couple.interpreter.Nested
 
-class CoupleQuelTest extends FlatSpec with Matchers {
+class CoupleTlinqTest extends FlatSpec with Matchers {
 
-  implicit val _1 = symantics.Optica.quelOptica[λ[x => x]]
-  implicit val _2 = Model.quelModel[λ[x => x]]
+  implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
+  implicit val _2 = Model.tlinqModel[λ[x => x]]
 
-  object CoupleLogicQuel extends Logic[Down[λ[x => x], ?], λ[x => x]]
-  import CoupleLogicQuel.differences
+  object CoupleLogicTlinq extends Logic[Down[λ[x => x], ?], λ[x => x]]
+  import CoupleLogicTlinq.differences
 
-  implicit val _3 = symantics.Optica.quelOptica[λ[x => Int => String]]
-  implicit val _4 = Model.quelModel[λ[x => Int => String]]
-  val _5 = implicitly[quel.Quel[λ[x => Int => String]]]
+  implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]
+  implicit val _4 = Model.tlinqModel[λ[x => Int => String]]
+  val _5 = implicitly[tlinq.Tlinq[λ[x => Int => String]]]
 
-  object CoupleLogicQuelShow 
+  object CoupleLogicTlinqShow 
     extends Logic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
-  import CoupleLogicQuelShow.{differences => differencesShow}
+  import CoupleLogicTlinqShow.{differences => differencesShow}
 
   _5.app(differencesShow)(Nested[λ[x => Int => String]])(0)
 

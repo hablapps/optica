@@ -1,8 +1,8 @@
 package optica
-package quel
+package tlinq
 package interpreter
 
-trait RQuel extends Quel[λ[x => x]] {
+trait RTlinq extends Tlinq[λ[x => x]] {
 
   def int(i: Int) = i
 
@@ -50,5 +50,5 @@ trait RQuel extends Quel[λ[x => x]] {
   }
 }
 
-class R extends RQuel
+class R extends RTlinq
 

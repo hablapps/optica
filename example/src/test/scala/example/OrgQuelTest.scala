@@ -3,26 +3,26 @@ package test
 
 import optica._
 import symantics.interpreter.Down
-import symantics.Optica.quelOptica
+import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
 import org._, org.interpreter.Nested
 
-class OrgQuelTest extends FlatSpec with Matchers {
+class OrgTlinqTest extends FlatSpec with Matchers {
 
-  implicit val _1 = symantics.Optica.quelOptica[λ[x => x]]
-  implicit val _2 = Model.quelModel[λ[x => x]]
+  implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
+  implicit val _2 = Model.tlinqModel[λ[x => x]]
 
-  object OrgLogicQuel extends Logic[Down[λ[x => x], ?], λ[x => x]]
-  import OrgLogicQuel.expertise
+  object OrgLogicTlinq extends Logic[Down[λ[x => x], ?], λ[x => x]]
+  import OrgLogicTlinq.expertise
 
-  implicit val _3 = symantics.Optica.quelOptica[λ[x => Int => String]]
-  implicit val _4 = Model.quelModel[λ[x => Int => String]]
-  val _5 = implicitly[quel.Quel[λ[x => Int => String]]]
+  implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]
+  implicit val _4 = Model.tlinqModel[λ[x => Int => String]]
+  val _5 = implicitly[tlinq.Tlinq[λ[x => Int => String]]]
 
-  object OrgLogicQuelShow 
+  object OrgLogicTlinqShow 
     extends Logic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
-  import OrgLogicQuelShow.{expertise => expertiseShow}
+  import OrgLogicTlinqShow.{expertise => expertiseShow}
 
   _5.app(expertiseShow("abstract"))(Nested[λ[x => Int => String]])(0)
 

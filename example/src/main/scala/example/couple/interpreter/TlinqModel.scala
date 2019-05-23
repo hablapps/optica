@@ -1,13 +1,13 @@
 package example.couple
 package interpreter
 
-import optica.quel._
+import optica.tlinq._
 import optica.symantics.interpreter._
 
 case class CoupleRel(her: String, him: String)
 case class PersonRel(name: String, age: Int)
 
-class QuelModel[Repr[_]](implicit Q: Quel[Repr], N: Nested[Repr]) 
+class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr]) 
     extends Model[Down[Repr, ?]] {
   import Q._
 
@@ -97,7 +97,7 @@ trait Nested[Repr[_]] {
 object Nested {
 
   def apply[Repr[_]](implicit 
-      Q: Quel[Repr],
+      Q: Tlinq[Repr],
       S: Schema[Repr],
       N: Nested[Repr]): Repr[Couples] = {
     import Q._, S._
