@@ -1,5 +1,5 @@
 package example
-package test
+package org
 
 import _root_.org.scalatest._
 import scalaz._, Scalaz._
@@ -7,9 +7,8 @@ import scalaz._, Scalaz._
 import optica._
 import sql._
 import triplet._
-import org._
 
-class OrgSQLTest extends FlatSpec with Matchers {
+class SQLTest extends FlatSpec with Matchers {
 
   type Obs[_] = TypeNme ==>> FieldNme => Error \/ SSelect
 

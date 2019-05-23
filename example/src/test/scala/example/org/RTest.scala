@@ -1,11 +1,9 @@
 package example
-package test
+package org
 
 import _root_.org.scalatest._
-import example._
-import org._
 
-class OrgRTest extends FlatSpec with Matchers {
+class RTest extends FlatSpec with Matchers {
 
   val data: Org = List(
     Department("Product", List(

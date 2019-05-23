@@ -1,14 +1,14 @@
 package example
-package test
+package couple
 
 import optica._
 import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
-import couple._, couple.interpreter.Nested
+import couple.interpreter.Nested
 
-class CoupleTlinqTest extends FlatSpec with Matchers {
+class TlinqTest extends FlatSpec with Matchers {
 
   implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
   implicit val _2 = Model.tlinqModel[λ[x => x]]

@@ -1,12 +1,11 @@
 package example
-package test
+package couple
 
 import _root_.org.scalatest._
 import optica._
 import xquery._
-import couple._
 
-class CoupleXQueryTest extends FlatSpec with Matchers {
+class XQueryTest extends FlatSpec with Matchers {
 
   object CoupleLogicXQuery extends Logic[λ[x => XQuery], λ[x => XQuery]]
   import CoupleLogicXQuery.differences
