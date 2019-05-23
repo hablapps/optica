@@ -45,7 +45,7 @@ class TlinqTest extends FlatSpec with Matchers {
   // for (x1 <- table_employee) where x0.dpt == x1.dpt yield Employee(x1.emp,
   // for (x2 <- table_task) where x1.emp == x2.emp yield Task(x2.tsk))))
 
-  "Optica" should "translate differences into a fold" in {
+  "Optica" should "translate expertise into a fold" in {
     expertise("abstract")(Nested[λ[x => x]]) shouldBe 
       List("Quality", "Research")
   }
