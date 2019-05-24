@@ -9,17 +9,17 @@ case class PersonRel(name: String, age: Int)
 
 class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr]) 
     extends Model[Wrap[Repr, ?]] {
-  import Q._
+  import Q._, Nested.syntax._
 
   val couples = WrapFold(lam(identity))
 
-  val her = WrapGetter(lam(c => N.her(c)))
+  val her = WrapGetter(lam(c => c.her))
 
-  val him = WrapGetter(lam(c => N.him(c)))
+  val him = WrapGetter(lam(c => c.him))
 
-  val name = WrapGetter(lam(p => N.name(p)))
+  val name = WrapGetter(lam(p => p.name))
 
-  val age = WrapGetter(lam(p => N.age(p)))
+  val age = WrapGetter(lam(p => p.age))
 }
       
 trait Schema[Repr[_]] {
@@ -77,6 +77,25 @@ object Schema {
 
     def age(p: Int => String) = i => s"${p(i)}.age"
   }
+
+  trait Syntax {
+
+    implicit class CoupleRelOps[Repr[_]](
+        c: Repr[CoupleRel])(implicit
+        S: Schema[Repr]) {
+      def her = S.her(c)
+      def him = S.him(c)
+    }
+
+    implicit class PersonOps[Repr[_]](
+        p: Repr[PersonRel])(implicit
+        S: Schema[Repr]) {
+      def name = S.name(p)
+      def age  = S.age(p)
+    }
+  }
+
+  object syntax extends Syntax
 }
 
 trait Nested[Repr[_]] {
@@ -95,17 +114,18 @@ trait Nested[Repr[_]] {
 }
 
 object Nested {
+  import Schema.syntax._
 
   def apply[Repr[_]](implicit 
       Q: Tlinq[Repr],
       S: Schema[Repr],
       N: Nested[Repr]): Repr[Couples] = {
-    import Q._, S._
+    import Q._, S._, N.{Couple, Person}
     foreach(table_couple)(c =>
     foreach(table_person)(m =>
     foreach(table_person)(w =>
-    where(and(equal(her(c), name(w)), equal(him(c), name(m))))(
-    yields(N.Couple(N.Person(name(w), age(w)), N.Person(name(m), age(m))))))))
+    where(and(equal(c.her, w.name), equal(c.him, m.name)))(
+    yields(Couple(Person(w.name, w.age), Person(m.name, m.age)))))))
   }
   
   implicit object RNested extends Nested[λ[x => x]] {
@@ -141,5 +161,24 @@ object Nested {
     
     def age(p: Int => String) = i => s"${p(i)}.age"
   }
+
+  trait Syntax {
+
+    implicit class CoupleOps[Repr[_]](
+        c: Repr[Couple])(implicit
+        N: Nested[Repr]) {
+      def her = N.her(c)
+      def him = N.him(c)
+    }
+
+    implicit class PersonOps[Repr[_]](
+        p: Repr[Person])(implicit
+        N: Nested[Repr]) {
+      def name = N.name(p)
+      def age = N.age(p)
+    }
+  }
+
+  object syntax extends Syntax
 }
 

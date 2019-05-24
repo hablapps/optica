@@ -17,11 +17,9 @@ object Utils {
   private def dropTable(table: String) =
     Update0(s"DROP TABLE IF EXISTS $table", None).run
 
-  private val dropPersonTable =
-    dropTable("Person")
+  private val dropPersonTable = dropTable("Person")
 
-  private val dropCoupleTable =
-    dropTable("Couple")
+  private val dropCoupleTable = dropTable("Couple")
 
   private val createPersonTable =
     sql"""
@@ -71,14 +69,12 @@ object Utils {
     Update[Person](sql).updateMany(ps)
   }
 
-  private def insertManyCouple(
-                                 ps: List[(String, String)]): ConnectionIO[Int] = {
+  private def insertManyCouple(ps: List[(String, String)]): ConnectionIO[Int] = {
     val sql = "insert into Couple (him, her) values (?, ?)"
     Update[(String, String)](sql).updateMany(ps)
   }
 
-  private def insertManyDepartments(
-                                ps: List[Department]): ConnectionIO[Int] = {
+  private def insertManyDepartments(ps: List[Department]): ConnectionIO[Int] = {
     val sql = "insert into Department (dpt) values (?)"
     Update[String](sql).updateMany(ps.map(_.dpt))
   }
