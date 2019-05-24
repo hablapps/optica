@@ -144,11 +144,11 @@ object Nested {
       N: Nested[Repr]): Repr[Org] = {
     import Q._, S._, N.{Department, Employee, Task}, Schema.syntax._
     foreach(table_department)(d =>
-      yields(Department(d.dpt, foreach(table_employee)(e =>
-        where(equal(d.dpt, e.dpt))(
-          yields(Employee(e.emp, foreach(table_task)(t =>     
-            where(equal(e.emp, t.emp))(
-              yields(Task(t.tsk)))))))))))
+    yields(Department(d.dpt, foreach(table_employee)(e =>
+                             where(equal(d.dpt, e.dpt))(
+                             yields(Employee(e.emp, foreach(table_task)(t =>     
+                                                    where(equal(e.emp, t.emp))(
+                                                    yields(Task(t.tsk)))))))))))
   }
 
   implicit object RNested extends Nested[λ[x => x]] {
