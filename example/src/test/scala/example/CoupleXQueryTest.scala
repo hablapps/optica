@@ -15,12 +15,13 @@ class CoupleXQueryTest extends FlatSpec with Matchers {
   import CoupleLogicXQuery.differences
 
   "Optica" should "translate differences into an XQuery expression" in {
-    differences.toString shouldBe "/xml/couple[her/age > him/age]/<tuple><fst>{her/name}</fst><snd>{her/age - him/age}</snd></tuple>"
+    differences.toString shouldBe 
+      "/xml/couple[her/age > him/age]/<tuple><fst>{her/name}</fst><snd>{her/age - him/age}</snd></tuple>"
   }
 
   it should "work with a xml example" in {
 
-    def process(query: String)(filePath: String):List[String] = { // Create a query processor
+    def process(query: String)(filePath: String): List[String] = {
       val xml = s"""doc('$filePath')""".stripMargin
       val str = s"""for $$x in $xml$query return data($$x)"""
       val context = new Context()
@@ -29,8 +30,8 @@ class CoupleXQueryTest extends FlatSpec with Matchers {
 
     val query = differences.toString
 
-    process(query)("example/src/test/resources/couple.xml") shouldBe List(""""Alex5"""",""""Cora2"""")
-
+    process(query)("example/src/test/resources/couple.xml") shouldBe 
+      List(""""Alex5"""",""""Cora2"""")
   }
 }
 

@@ -7,8 +7,8 @@ import doobie._
 import doobie.implicits._
 import example.org._
 import optica._
-import optica.sql._
-import optica.triplet._
+import sql._
+import triplet._
 import scalaz.Scalaz._
 import scalaz._
 
@@ -28,7 +28,7 @@ class OrgSQLTest extends FlatSpec with Matchers {
 
   it should "work with a database" in {
 
-    val persons = List(
+    val people = List(
       Department("Product", List(
         Employee("Alex", List(Task("build"))),
         Employee("Bert", List(Task("build"))))),
@@ -43,7 +43,7 @@ class OrgSQLTest extends FlatSpec with Matchers {
     Utils.transactor.use(transIO =>
       for {
         select <- expertise("abstract")(keys).fold(IO.raiseError, IO.pure)
-        _ <- Utils.prepareOrgEnviroment(persons).transact(Utils.xa)
+        _ <- Utils.prepareOrgEnviroment(people).transact(Utils.xa)
         result <-  Query0[String](select.toString).to[List].transact(transIO)
       } yield result).unsafeRunSync shouldBe List("Quality", "Research")
   }

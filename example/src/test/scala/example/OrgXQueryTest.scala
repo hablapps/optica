@@ -15,12 +15,13 @@ class OrgXQueryTest extends FlatSpec with Matchers {
   import OrgLogicXQuery.expertise
 
   "Optica" should "translate differences into an XQuery expression" in {
-    expertise("abstract").toString shouldBe """/xml/department[not(exists(employee[not(exists(task/tsk[. = "abstract"]))]))]/dpt"""
+    expertise("abstract").toString shouldBe 
+      """/xml/department[not(exists(employee[not(exists(task/tsk[. = "abstract"]))]))]/dpt"""
   }
 
   it should "work with a xml example" in {
 
-    def process(query: String)(filePath: String):List[String] = { // Create a query processor
+    def process(query: String)(filePath: String):List[String] = {
       val xml = s"""doc('$filePath')""".stripMargin
       val str = s"""for $$x in $xml$query return data($$x)"""
       val context = new Context()
@@ -29,9 +30,8 @@ class OrgXQueryTest extends FlatSpec with Matchers {
 
     val query = expertise("abstract").toString
 
-    process(query)("example/src/test/resources/org" +
-      ".xml") shouldBe List(""""Quality"""", """"Research"""")
-
+    process(query)("example/src/test/resources/org.xml") shouldBe 
+      List(""""Quality"""", """"Research"""")
   }
 }
 

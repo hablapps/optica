@@ -14,6 +14,7 @@ import example.couple.Person
 import scala.concurrent.ExecutionContext
 
 object Utils {
+
   private def dropTable(table: String) =
     Update0(s"DROP TABLE IF EXISTS $table", None).run
 
@@ -29,42 +30,42 @@ object Utils {
       name TEXT NOT NULL PRIMARY KEY ,
       age  INTEGER
     )
-  """.update.run
+    """.update.run
 
   private val createCoupleTable =
     sql"""
-   CREATE TABLE Couple (
-         him TEXT NOT NULL UNIQUE,
-         her TEXT NOT NULL UNIQUE,
-         FOREIGN KEY(him) REFERENCES Person(name),
-         FOREIGN KEY(her) REFERENCES Person(name)
-         )
-  """.update.run
+    CREATE TABLE Couple (
+      him TEXT NOT NULL UNIQUE,
+      her TEXT NOT NULL UNIQUE,
+      FOREIGN KEY(him) REFERENCES Person(name),
+      FOREIGN KEY(her) REFERENCES Person(name)
+    )
+    """.update.run
 
   private val createTaskTable =
     sql"""
-         CREATE TABLE Task (
-          tsk varchar(255) NOT NULL,
-         emp varchar(255) NOT NULL,
-         FOREIGN KEY (emp) REFERENCES Employee(emp)
-         );
-  """.update.run
+    CREATE TABLE Task (
+      tsk varchar(255) NOT NULL,
+      emp varchar(255) NOT NULL,
+      FOREIGN KEY (emp) REFERENCES Employee(emp)
+    );
+    """.update.run
 
   private val createEmployeeTable =
     sql"""
-   CREATE TABLE Employee (
-         emp varchar(255) PRIMARY KEY,
-         dpt varchar(255) NOT NULL,
-         FOREIGN KEY (dpt) REFERENCES Department(dpt)
-         )
-  """.update.run
+    CREATE TABLE Employee (
+      emp varchar(255) PRIMARY KEY,
+      dpt varchar(255) NOT NULL,
+      FOREIGN KEY (dpt) REFERENCES Department(dpt)
+    )
+    """.update.run
 
   private val createDepartmentTable =
     sql"""
-      CREATE TABLE Department (
-         dpt varchar(255) PRIMARY KEY
-         )
-  """.update.run
+    CREATE TABLE Department (
+      dpt varchar(255) PRIMARY KEY
+    )
+    """.update.run
 
   private def insertManyPerson(ps: List[Person]): ConnectionIO[Int] = {
     val sql = "insert into Person (name, age) values (?, ?)"
@@ -109,17 +110,25 @@ object Utils {
       .mapN(_ + _ + _ + _ + _)
 
   def prepareOrgEnviroment(departments: List[Department]): ConnectionIO[Int] = {
-    val dropTables = (dropTable("Task"), dropTable("Employee"), dropTable("Department")).mapN(_ + _ + _)
-    val createTables = (createDepartmentTable, createEmployeeTable, createTaskTable).mapN(_ + _ + _)
-    val insertDepartmenst: ConnectionIO[Int] = insertManyDepartments(departments)
-    val insertEmployees: ConnectionIO[Int] = departments.traverse(insertManyEmployees).map(_.sum)
-    val insertTasks: ConnectionIO[Int] = departments.flatMap(_.employees).traverse(insertManyTasks).map(_.sum)
-    val insertAll = (insertDepartmenst, insertEmployees, insertTasks).mapN(_ + _ + _)
+    val dropTables = (
+      dropTable("Task"), 
+      dropTable("Employee"), 
+      dropTable("Department")).mapN(_ + _ + _)
+    val createTables = (
+      createDepartmentTable, 
+      createEmployeeTable, 
+      createTaskTable).mapN(_ + _ + _)
+    val insertDepartmenst: ConnectionIO[Int] = 
+      insertManyDepartments(departments)
+    val insertEmployees: ConnectionIO[Int] = 
+      departments.traverse(insertManyEmployees).map(_.sum)
+    val insertTasks: ConnectionIO[Int] = 
+      departments.flatMap(_.employees).traverse(insertManyTasks).map(_.sum)
+    val insertAll = 
+      (insertDepartmenst, insertEmployees, insertTasks).mapN(_ + _ + _)
 
     (dropTables, createTables, insertAll).mapN(_ + _ + _)
   }
-
-
 
   val xa = {
     implicit val cs: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
