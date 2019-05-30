@@ -10,11 +10,11 @@ class RTest extends FlatSpec with Matchers {
     Couple(Person("Cora", 33), Person("Drew", 31)),
     Couple(Person("Edna", 21), Person("Fred", 60)))
 
-  object CoupleLogicR extends Logic[λ[x => x], λ[x => x]]
-  import CoupleLogicR.differences
+  val differencesR: Couples => List[(String, Int)] = 
+    differences[λ[x => x], λ[x => x]]
 
   "Optica" should "translate differences into a fold" in {
-    differences(data) shouldBe List("Alex" -> 5, "Cora" -> 2) 
+    differencesR(data) shouldBe List("Alex" -> 5, "Cora" -> 2) 
   }
 }
 

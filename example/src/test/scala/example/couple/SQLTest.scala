@@ -14,11 +14,11 @@ class SQLTest extends FlatSpec with Matchers {
 
   type Obs[_] = TypeNme ==>> FieldNme => Error \/ SSelect
 
-  object CoupleLogicTripletFun extends Logic[λ[x => TripletFun], Obs]
-  import CoupleLogicTripletFun.differences
+  val differencesSQL: TypeNme ==>> FieldNme => Error \/ SSelect =
+    differences[λ[x => TripletFun], Obs]
 
   "Optica" should "translate difference into a SELECT statement" in {
-    differences(==>>("Person" -> "name")).map(_.toString) shouldBe \/-(
+    differencesSQL(==>>("Person" -> "name")).map(_.toString) shouldBe \/-(
       "SELECT w.name, (w.age - m.age) FROM Couple AS c INNER JOIN Person AS w ON c.her = w.name INNER JOIN Person AS m ON c.him = m.name WHERE (w.age > m.age)")
   }
 
@@ -31,7 +31,7 @@ class SQLTest extends FlatSpec with Matchers {
 
     Utils.transactor.use(transIO =>
       for {
-        select <- differences(==>>("Person" -> "name")).fold(IO.raiseError, IO.pure)
+        select <- differencesSQL(==>>("Person" -> "name")).fold(IO.raiseError, IO.pure)
         _ <- Utils.prepareCoupleEnviroment(people).transact(Utils.xa)
         result <- Query0[(String, Int)](select.toString).to[List].transact(transIO)
       } yield result).unsafeRunSync shouldBe List("Alex" -> 5, "Cora" -> 2)
