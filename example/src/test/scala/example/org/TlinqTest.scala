@@ -1,19 +1,19 @@
 package example
-package test
+package org
 
 import optica._
-import symantics.interpreter.Down
+import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
-import org._, org.interpreter.Nested
+import interpreter.Nested
 
-class OrgTlinqTest extends FlatSpec with Matchers {
+class TlinqTest extends FlatSpec with Matchers {
 
   implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
   implicit val _2 = Model.tlinqModel[λ[x => x]]
 
-  object OrgLogicTlinq extends Logic[Down[λ[x => x], ?], λ[x => x]]
+  object OrgLogicTlinq extends Logic[Wrap[λ[x => x], ?], λ[x => x]]
   import OrgLogicTlinq.expertise
 
   implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]
@@ -21,7 +21,7 @@ class OrgTlinqTest extends FlatSpec with Matchers {
   val _5 = implicitly[tlinq.Tlinq[λ[x => Int => String]]]
 
   object OrgLogicTlinqShow 
-    extends Logic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
+    extends Logic[Wrap[λ[x => Int => String], ?], λ[x => Int => String]]
   import OrgLogicTlinqShow.{expertise => expertiseShow}
 
   _5.app(expertiseShow("abstract"))(Nested[λ[x => Int => String]])(0)
@@ -45,7 +45,7 @@ class OrgTlinqTest extends FlatSpec with Matchers {
   // for (x1 <- table_employee) where x0.dpt == x1.dpt yield Employee(x1.emp,
   // for (x2 <- table_task) where x1.emp == x2.emp yield Task(x2.tsk))))
 
-  "Optica" should "translate differences into a fold" in {
+  "Optica" should "translate expertise into a fold" in {
     expertise("abstract")(Nested[λ[x => x]]) shouldBe 
       List("Quality", "Research")
   }

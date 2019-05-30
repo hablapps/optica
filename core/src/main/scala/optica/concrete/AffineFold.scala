@@ -3,7 +3,7 @@ package concrete
 
 import scalaz._, Scalaz._, Kleisli._
 
-case class AffineFold[S, A](getOpt: S => Option[A])
+case class AffineFold[S, A](preview: S => Option[A])
 
 object AffineFold {
 
@@ -14,7 +14,7 @@ object AffineFold {
     def compose[A, B, C](
         f: AffineFold[B, C],
         g: AffineFold[A, B]): AffineFold[A, C] =
-      AffineFold(kleisli(g.getOpt) >>> kleisli(f.getOpt))
+      AffineFold(kleisli(g.preview) >>> kleisli(f.preview))
   }
 
   def filtered[S](p: Getter[S, Boolean]): AffineFold[S, S] =

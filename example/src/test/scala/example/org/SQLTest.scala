@@ -1,18 +1,16 @@
 package example
-package test
+package org
 
-import _root_.org.scalatest._
+import scalaz._, Scalaz._
 import cats.effect.IO
+import _root_.org.scalatest._
 import doobie._
 import doobie.implicits._
-import example.org._
 import optica._
 import sql._
 import triplet._
-import scalaz.Scalaz._
-import scalaz._
 
-class OrgSQLTest extends FlatSpec with Matchers {
+class SQLTest extends FlatSpec with Matchers {
 
   type Obs[_] = TypeNme ==>> FieldNme => Error \/ SSelect
 

@@ -7,7 +7,7 @@ trait FoldSym[Repr[_], Obs[_]] {
 
   def id_fl[S]: Repr[Fold[S, S]]
 
-  def comp_fl[S, A, B](
+  def andThen_fl[S, A, B](
     u: Repr[Fold[S, A]],
     d: Repr[Fold[A, B]]): Repr[Fold[S, B]]
 
@@ -39,7 +39,7 @@ object FoldSym {
         ev: FoldSym[Repr, Obs]) {
 
       def >>>[B](other: Repr[Fold[A, B]]): Repr[Fold[S, B]] = 
-        ev.comp_fl(fl, other)
+        ev.andThen_fl(fl, other)
 
       def all(p: Repr[Getter[A, Boolean]]): Repr[Getter[S, Boolean]] =
         ev.all(fl)(p)

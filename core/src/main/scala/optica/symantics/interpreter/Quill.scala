@@ -22,7 +22,7 @@ case class QGetAll[S, A](
 
 trait QuillGetterSym extends GetterSym[QRep, QObs] {
 
-  def comp_gt[S, A, B](
+  def andThen_gt[S, A, B](
       u: QRep[Getter[S, A]], 
       d: QRep[Getter[A, B]]) = (u, d) match {
     case (QGetter(f), QGetter(g)) => QGetter(quote { s: S => g(f(s)) })
@@ -78,7 +78,7 @@ trait QuillAffineFoldSym extends AffineFoldSym[QRep, QObs] {
 
   def id_af[S] = QAffine(quote { q: Query[S] => q })
 
-  def comp_af[S, A, B](
+  def andThen_af[S, A, B](
       u: QRep[AffineFold[S, A]], 
       d: QRep[AffineFold[A, B]]) = (u, d) match {
     case (QAffine(f), QAffine(g)) => QAffine(quote { q: Query[S] => 
@@ -102,14 +102,14 @@ trait QuillAffineFoldSym extends AffineFoldSym[QRep, QObs] {
     })
   }
 
-  def getOpt[S, A](af: QRep[AffineFold[S, A]]) = ???
+  def preview[S, A](af: QRep[AffineFold[S, A]]) = ???
 }
 
 trait QuillFoldSym extends FoldSym[QRep, QObs] {
 
   def id_fl[S] = QFold(quote { q: Query[S] => q })
 
-  def comp_fl[S, A, B](
+  def andThen_fl[S, A, B](
       u: QRep[Fold[S, A]], 
       d: QRep[Fold[A, B]]) = (u, d) match {
     case (QFold(f), QFold(g)) => QFold(quote { q: Query[S] => 

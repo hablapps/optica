@@ -1,11 +1,9 @@
 package example
-package test
+package couple
 
 import _root_.org.scalatest._
-import example._
-import couple._
 
-class CoupleRTest extends FlatSpec with Matchers {
+class RTest extends FlatSpec with Matchers {
 
   val data: Couples = List(
     Couple(Person("Alex", 60), Person("Bert", 55)),

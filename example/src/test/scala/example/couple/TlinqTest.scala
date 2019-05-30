@@ -1,19 +1,19 @@
 package example
-package test
+package couple
 
 import optica._
-import symantics.interpreter.Down
+import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
-import couple._, couple.interpreter.Nested
+import couple.interpreter.Nested
 
-class CoupleTlinqTest extends FlatSpec with Matchers {
+class TlinqTest extends FlatSpec with Matchers {
 
   implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
   implicit val _2 = Model.tlinqModel[λ[x => x]]
 
-  object CoupleLogicTlinq extends Logic[Down[λ[x => x], ?], λ[x => x]]
+  object CoupleLogicTlinq extends Logic[Wrap[λ[x => x], ?], λ[x => x]]
   import CoupleLogicTlinq.differences
 
   implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]
@@ -21,7 +21,7 @@ class CoupleTlinqTest extends FlatSpec with Matchers {
   val _5 = implicitly[tlinq.Tlinq[λ[x => Int => String]]]
 
   object CoupleLogicTlinqShow 
-    extends Logic[Down[λ[x => Int => String], ?], λ[x => Int => String]]
+    extends Logic[Wrap[λ[x => Int => String], ?], λ[x => Int => String]]
   import CoupleLogicTlinqShow.{differences => differencesShow}
 
   _5.app(differencesShow)(Nested[λ[x => Int => String]])(0)

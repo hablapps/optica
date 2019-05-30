@@ -9,7 +9,7 @@ trait XQueryGetterSym extends GetterSym[λ[x => XQuery], λ[x => XQuery]] {
 
   def id_gt[S] = Self
 
-  def comp_gt[S, A, B](u: XQuery, d: XQuery) = Seq(u, d)
+  def andThen_gt[S, A, B](u: XQuery, d: XQuery) = Seq(u, d)
 
   def fork_gt[S, A, B](l: XQuery, r: XQuery) = Tuple(l, r)
 
@@ -34,20 +34,20 @@ trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery], λ[x => XQuery]
 
   def id_af[S] = Self
   
-  def comp_af[S, A, B](u: XQuery, d: XQuery) = Seq(u, d)
+  def andThen_af[S, A, B](u: XQuery, d: XQuery) = Seq(u, d)
 
   def filtered[S](p: XQuery) = Filter(p)
 
   def as_afl[S, A](gt: XQuery) = gt
 
-  def getOpt[S, A](fl: XQuery) = Seq(Document, Seq(Name("xml"), fl))
+  def preview[S, A](fl: XQuery) = Seq(Document, Seq(Name("xml"), fl))
 }
 
 trait XQueryFoldSym extends FoldSym[λ[x => XQuery], λ[x => XQuery]] {
 
   def id_fl[S] = Self
 
-  def comp_fl[S, A, B](u: XQuery, d: XQuery) = Seq(u, d)
+  def andThen_fl[S, A, B](u: XQuery, d: XQuery) = Seq(u, d)
 
   def nonEmpty[S, A](fl: XQuery) = Func("exists", fl)
 

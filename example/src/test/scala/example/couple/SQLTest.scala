@@ -1,17 +1,16 @@
 package example
-package test
+package couple
 
-import _root_.org.scalatest._
+import scalaz._, scalaz.Scalaz._
 import cats.effect.IO
+import _root_.org.scalatest._
+import optica._
+import sql._
+import triplet._
 import doobie._
 import doobie.implicits._
-import example.couple._
-import optica.sql._
-import optica.triplet._
-import scalaz.Scalaz._
-import scalaz._
 
-class CoupleSQLTest extends FlatSpec with Matchers {
+class SQLTest extends FlatSpec with Matchers {
 
   type Obs[_] = TypeNme ==>> FieldNme => Error \/ SSelect
 

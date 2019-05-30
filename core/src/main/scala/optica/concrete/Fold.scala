@@ -32,7 +32,7 @@ object Fold {
     any(fl)(Getter.GetterCat.id[A] === a)
 
   implicit def fromAffineFold[S, A](afl: AffineFold[S, A]): Fold[S, A] =
-    Fold(afl.getOpt(_).toList)
+    Fold(afl.preview(_).toList)
 
   implicit def fromGetter[S, A](getter: Getter[S, A]): Fold[S, A] =
     Fold.fromAffineFold(AffineFold.fromGetter(getter))

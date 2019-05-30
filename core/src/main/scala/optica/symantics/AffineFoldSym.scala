@@ -7,7 +7,7 @@ trait AffineFoldSym[Repr[_], Obs[_]] {
 
   def id_af[S]: Repr[AffineFold[S, S]]
 
-  def comp_af[S, A, B](
+  def andThen_af[S, A, B](
     u: Repr[AffineFold[S, A]],
     d: Repr[AffineFold[A, B]]): Repr[AffineFold[S, B]]
 
@@ -15,7 +15,7 @@ trait AffineFoldSym[Repr[_], Obs[_]] {
 
   def as_afl[S, A](gt: Repr[Getter[S, A]]): Repr[AffineFold[S, A]]
 
-  def getOpt[S, A](af: Repr[AffineFold[S, A]]): Obs[S => Option[A]]
+  def preview[S, A](af: Repr[AffineFold[S, A]]): Obs[S => Option[A]]
 }
 
 object AffineFoldSym {
@@ -27,9 +27,9 @@ object AffineFoldSym {
         ev: AffineFoldSym[Repr, Obs]) {
           
       def >>>[B](other: Repr[AffineFold[A, B]]): Repr[AffineFold[S, B]] =
-        ev.comp_af(af, other)
+        ev.andThen_af(af, other)
 
-      def getOpt: Obs[S => Option[A]] = ev.getOpt(af)
+      def preview: Obs[S => Option[A]] = ev.preview(af)
     }
 
     implicit def gt_as_afl[Repr[_], Obs[_], S, A](

@@ -12,12 +12,12 @@ trait Optica[Repr[_], Obs[_]] extends GetterSym[Repr, Obs]
   def any[S, A](
       fl: Repr[Fold[S, A]])(
       p: Repr[Getter[A, Boolean]]): Repr[Getter[S, Boolean]] =
-    nonEmpty(comp_fl(fl, as_fl(filtered(p))))
+    nonEmpty(andThen_fl(fl, as_fl(filtered(p))))
 
   def all[S, A](
       fl: Repr[Fold[S, A]])(
       p: Repr[Getter[A, Boolean]]): Repr[Getter[S, Boolean]] =
-    empty(comp_fl(fl, as_fl(filtered(not(p)))))
+    empty(andThen_fl(fl, as_fl(filtered(not(p)))))
 
   def elem[S, A: Base](fl: Repr[Fold[S, A]])(a: A): Repr[Getter[S, Boolean]] =
     any(fl)(equal(id_gt, like(a)))

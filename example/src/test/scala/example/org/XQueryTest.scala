@@ -1,20 +1,19 @@
 package example
-package test
+package org
 
 import _root_.org.scalatest._
 import optica._
 import xquery._
-import org._
 import _root_.org.basex.core._
 import _root_.org.basex.query._
 import scala.collection.JavaConverters._
 
-class OrgXQueryTest extends FlatSpec with Matchers {
+class XQueryTest extends FlatSpec with Matchers {
 
   object OrgLogicXQuery extends Logic[λ[x => XQuery], λ[x => XQuery]]
   import OrgLogicXQuery.expertise
 
-  "Optica" should "translate differences into an XQuery expression" in {
+  "Optica" should "translate expertise into an XQuery expression" in {
     expertise("abstract").toString shouldBe 
       """/xml/department[not(exists(employee[not(exists(task/tsk[. = "abstract"]))]))]/dpt"""
   }

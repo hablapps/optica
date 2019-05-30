@@ -1,5 +1,4 @@
 package example
-package test
 
 import cats.effect.{ContextShift, IO, Resource}
 import doobie.util.update.Update0
@@ -18,11 +17,9 @@ object Utils {
   private def dropTable(table: String) =
     Update0(s"DROP TABLE IF EXISTS $table", None).run
 
-  private val dropPersonTable =
-    dropTable("Person")
+  private val dropPersonTable = dropTable("Person")
 
-  private val dropCoupleTable =
-    dropTable("Couple")
+  private val dropCoupleTable = dropTable("Couple")
 
   private val createPersonTable =
     sql"""
@@ -72,14 +69,12 @@ object Utils {
     Update[Person](sql).updateMany(ps)
   }
 
-  private def insertManyCouple(
-                                 ps: List[(String, String)]): ConnectionIO[Int] = {
+  private def insertManyCouple(ps: List[(String, String)]): ConnectionIO[Int] = {
     val sql = "insert into Couple (him, her) values (?, ?)"
     Update[(String, String)](sql).updateMany(ps)
   }
 
-  private def insertManyDepartments(
-                                ps: List[Department]): ConnectionIO[Int] = {
+  private def insertManyDepartments(ps: List[Department]): ConnectionIO[Int] = {
     val sql = "insert into Department (dpt) values (?)"
     Update[String](sql).updateMany(ps.map(_.dpt))
   }
@@ -93,7 +88,6 @@ object Utils {
     val sql = "insert into Task (emp, tsk) values (?, ?)"
     Update[(String,String)](sql).updateMany(e.tasks.map(t => (e.emp, t.tsk)))
   }
-
 
   private def insertCouples(couples: Couples): ConnectionIO[Int] = {
     val person = couples.flatMap(c => Iterator(c.him, c.her))
@@ -133,8 +127,7 @@ object Utils {
   val xa = {
     implicit val cs: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
     Transactor.fromDriverManager[IO](
-      "org.sqlite.JDBC", "jdbc:sqlite:sample.db", "", ""
-    )
+      "org.sqlite.JDBC", "jdbc:sqlite:sample.db", "", "")
   }
 
   val transactor: Resource[IO, HikariTransactor[IO]] = {
@@ -142,15 +135,16 @@ object Utils {
 
     for {
       ce <- ExecutionContexts.fixedThreadPool[IO](32) // our connect EC
-      te <- ExecutionContexts.cachedThreadPool[IO] // our transaction EC
+      te <- ExecutionContexts.cachedThreadPool[IO]    // our transaction EC
       xa <- HikariTransactor.newHikariTransactor[IO](
         "org.sqlite.JDBC",
         "jdbc:sqlite:sample.db",
         "", // username
         "", // password
         ce, // await connection here
-        te // execute JDBC operations here
+        te  // execute JDBC operations here
       )
     } yield xa
   }
 }
+
