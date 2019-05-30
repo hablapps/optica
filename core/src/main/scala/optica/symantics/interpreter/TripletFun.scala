@@ -9,9 +9,7 @@ import scalaz._, Scalaz._
 import triplet._, triplet.interpreter.ToSQL
 import sql._
 
-trait TripletFunGetterSym 
-    extends GetterSym[λ[x => TripletFun],
-                      λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
+trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
 
   def id_gt[S] = identity
 
@@ -40,6 +38,11 @@ trait TripletFunGetterSym
   def greaterThan[S](x: TripletFun, y: TripletFun) = binary(x, y)(GreaterThan)
 
   def subtract[S](x: TripletFun, y: TripletFun) = binary(x, y)(Sub)
+}
+
+trait TripletFunGetterAct 
+    extends GetterAct[λ[x => TripletFun],
+                      λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def get[S, A](gt: TripletFun) = 
     const(new Error("unsupported action: `get`").left)
@@ -86,7 +89,7 @@ trait TripletFunFoldSym
 class TripletFunSym 
     extends Optica[λ[x => TripletFun], 
                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]]
-    with TripletFunGetterSym 
+    with TripletFunGetterSym with TripletFunGetterAct
     with TripletFunAffineFoldSym 
     with TripletFunFoldSym {
 

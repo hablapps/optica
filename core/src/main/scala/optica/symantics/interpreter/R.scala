@@ -7,7 +7,7 @@ import concrete._
 import CategoryWithProduct.syntax._, Getter.syntax._, Fold.syntax._
 import Base._
 
-trait RGetterSym extends GetterSym[λ[x => x], λ[x => x]] {
+trait RGetterSym extends GetterSym[λ[x => x]] {
 
   def andThen_gt[S, A, B](u: Getter[S, A], d: Getter[A, B]) = u >>> d
 
@@ -31,6 +31,9 @@ trait RGetterSym extends GetterSym[λ[x => x], λ[x => x]] {
   def greaterThan[S](x: Getter[S, Int], y: Getter[S, Int]) = x > y
 
   def subtract[S](x: Getter[S, Int], y: Getter[S, Int]) = x - y
+}
+
+trait RGetterAct extends GetterAct[λ[x => x], λ[x => x]] {
 
   def get[S, A](gt: Getter[S, A]) = gt.get
 }
@@ -62,5 +65,5 @@ trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
 }
 
 class R extends Optica[λ[x => x], λ[x => x]]
-  with RGetterSym with RAffineFoldSym with RFoldSym
+  with RGetterSym with RGetterAct with RAffineFoldSym with RFoldSym
 

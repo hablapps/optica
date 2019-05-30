@@ -2,7 +2,10 @@ package optica
 package tlinq
 package interpreter
 
-import symantics.interpreter.ctx._
+import io.getquill._
+
+object ctx extends SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
 
 sealed abstract class QuillRepr[A]
 case class QuillT[A](a: Quoted[A]) extends QuillRepr[A]
