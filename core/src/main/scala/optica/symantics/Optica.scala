@@ -3,9 +3,9 @@ package symantics
 
 import concrete._
 
-trait Optica[Repr[_], Obs[_]] extends GetterSym[Repr]
-    with GetterAct[Repr, Obs]
-    with AffineFoldSym[Repr, Obs] with FoldSym[Repr, Obs] {
+trait Optica[Repr[_], Obs[_]] extends GetterSym[Repr] with GetterAct[Repr, Obs]
+    with AffineFoldSym[Repr] with AffineFoldAct[Repr, Obs]
+    with FoldSym[Repr, Obs] {
 
   def empty[S, A](fl: Repr[Fold[S, A]]): Repr[Getter[S, Boolean]] =
     not(nonEmpty(fl))

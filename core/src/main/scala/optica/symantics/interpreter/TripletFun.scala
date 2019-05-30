@@ -48,9 +48,7 @@ trait TripletFunGetterAct
     const(new Error("unsupported action: `get`").left)
 }
 
-trait TripletFunAffineFoldSym 
-    extends AffineFoldSym[λ[x => TripletFun],
-                          λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
+trait TripletFunAffineFoldSym extends AffineFoldSym[λ[x => TripletFun]] {
 
   def id_af[S] = identity
 
@@ -63,6 +61,11 @@ trait TripletFunAffineFoldSym
   }
 
   def as_afl[S, A](gt: TripletFun) = gt
+}
+
+trait TripletFunAffineFoldAct 
+    extends AffineFoldAct[λ[x => TripletFun],
+                          λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def preview[S, A](af: TripletFun) = 
     const(new Error("unsupported action: `preview`").left)
@@ -90,8 +93,8 @@ class TripletFunSym
     extends Optica[λ[x => TripletFun], 
                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]]
     with TripletFunGetterSym with TripletFunGetterAct
-    with TripletFunAffineFoldSym 
-    with TripletFunFoldSym {
+    with TripletFunAffineFoldSym with TripletFunAffineFoldAct
+    with TripletFunFoldSym /* with TripletFunFoldAct */ {
 
   def entity(ot: OpticType, vn: String): TripletFun = {
     case (List(Path(xs)), f, w) => {

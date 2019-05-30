@@ -33,7 +33,7 @@ trait XQueryGetterAct extends GetterAct[λ[x => XQuery], λ[x => XQuery]] {
   def get[S, A](gt: XQuery) = Seq(Document, Seq(Name("xml"), gt))
 }
 
-trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery], λ[x => XQuery]] {
+trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery]] {
 
   def id_af[S] = Self
   
@@ -42,6 +42,9 @@ trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery], λ[x => XQuery]
   def filtered[S](p: XQuery) = Filter(p)
 
   def as_afl[S, A](gt: XQuery) = gt
+}
+
+trait XQueryAffineFoldAct extends AffineFoldAct[λ[x => XQuery], λ[x => XQuery]] {
 
   def preview[S, A](fl: XQuery) = Seq(Document, Seq(Name("xml"), fl))
 }
@@ -61,5 +64,6 @@ trait XQueryFoldSym extends FoldSym[λ[x => XQuery], λ[x => XQuery]] {
 
 class XQuerySym extends Optica[λ[x => XQuery], λ[x => XQuery]]
   with XQueryGetterSym with XQueryGetterAct 
-  with XQueryAffineFoldSym with XQueryFoldSym
+  with XQueryAffineFoldSym with XQueryAffineFoldAct
+  with XQueryFoldSym // with XQueryFoldAct
 

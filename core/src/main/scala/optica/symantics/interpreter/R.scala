@@ -38,7 +38,7 @@ trait RGetterAct extends GetterAct[λ[x => x], λ[x => x]] {
   def get[S, A](gt: Getter[S, A]) = gt.get
 }
 
-trait RAffineFoldSym extends AffineFoldSym[λ[x => x], λ[x => x]] {
+trait RAffineFoldSym extends AffineFoldSym[λ[x => x]] {
 
   def id_af[S] = Category[AffineFold].id
 
@@ -47,6 +47,9 @@ trait RAffineFoldSym extends AffineFoldSym[λ[x => x], λ[x => x]] {
   def filtered[S](p: Getter[S, Boolean]) = AffineFold.filtered(p)
 
   def as_afl[S, A](gt: Getter[S, A]) = gt
+}
+
+trait RAffineFoldAct extends AffineFoldAct[λ[x => x], λ[x => x]] {
 
   def preview[S, A](af: AffineFold[S, A]) = af.preview
 }
@@ -65,5 +68,7 @@ trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
 }
 
 class R extends Optica[λ[x => x], λ[x => x]]
-  with RGetterSym with RGetterAct with RAffineFoldSym with RFoldSym
+  with RGetterSym with RGetterAct 
+  with RAffineFoldSym with RAffineFoldAct
+  with RFoldSym // with RFoldAct
 
