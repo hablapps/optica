@@ -7,7 +7,7 @@ trait GetterSym[Repr[_], Obs[_]] {
 
   def id_gt[S]: Repr[Getter[S, S]]
 
-  def comp_gt[S, A, B](
+  def andThen_gt[S, A, B](
     u: Repr[Getter[S, A]],
     d: Repr[Getter[A, B]]): Repr[Getter[S, B]]
 
@@ -43,7 +43,7 @@ object GetterSym {
         ev: GetterSym[Repr, Obs]) {
 
       def >>>[B](other: Repr[Getter[A, B]]): Repr[Getter[S, B]] =
-        ev.comp_gt(gt, other)
+        ev.andThen_gt(gt, other)
 
       def ***[B](other: Repr[Getter[S, B]]): Repr[Getter[S, (A, B)]] =
         ev.fork_gt(gt, other)

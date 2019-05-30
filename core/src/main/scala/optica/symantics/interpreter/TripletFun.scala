@@ -15,7 +15,7 @@ trait TripletFunGetterSym
 
   def id_gt[S] = identity
 
-  def comp_gt[S, A, B](u: TripletFun, d: TripletFun) = u andThen d
+  def andThen_gt[S, A, B](u: TripletFun, d: TripletFun) = u andThen d
 
   def fork_gt[S, A, B](l: TripletFun, r: TripletFun) = 
     merge3With(l, r)(_ ++ _, _ lmerge _, _ ++ _)
@@ -51,7 +51,7 @@ trait TripletFunAffineFoldSym
 
   def id_af[S] = identity
 
-  def comp_af[S, A, B](u: TripletFun, d: TripletFun) = u andThen d
+  def andThen_af[S, A, B](u: TripletFun, d: TripletFun) = u andThen d
 
   def filtered[S](p: TripletFun) = {
     case (s, f, w) => p((s, f, Set.empty)) match {
@@ -61,8 +61,8 @@ trait TripletFunAffineFoldSym
 
   def as_afl[S, A](gt: TripletFun) = gt
 
-  def getOpt[S, A](af: TripletFun) = 
-    const(new Error("unsupported action: `getOpt`").left)
+  def preview[S, A](af: TripletFun) = 
+    const(new Error("unsupported action: `preview`").left)
 }
 
 trait TripletFunFoldSym 
@@ -71,7 +71,7 @@ trait TripletFunFoldSym
 
   def id_fl[S] = identity
 
-  def comp_fl[S, A, B](u: TripletFun, d: TripletFun) = u andThen d
+  def andThen_fl[S, A, B](u: TripletFun, d: TripletFun) = u andThen d
 
   def nonEmpty[S, A](fl: TripletFun) = {
     case (s, f, w) => 

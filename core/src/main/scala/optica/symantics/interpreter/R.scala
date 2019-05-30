@@ -9,7 +9,7 @@ import Base._
 
 trait RGetterSym extends GetterSym[λ[x => x], λ[x => x]] {
 
-  def comp_gt[S, A, B](u: Getter[S, A], d: Getter[A, B]) = u >>> d
+  def andThen_gt[S, A, B](u: Getter[S, A], d: Getter[A, B]) = u >>> d
 
   def fork_gt[S, A, B](l: Getter[S, A], r: Getter[S, B]) = l *** r
 
@@ -39,20 +39,20 @@ trait RAffineFoldSym extends AffineFoldSym[λ[x => x], λ[x => x]] {
 
   def id_af[S] = Category[AffineFold].id
 
-  def comp_af[S, A, B](u: AffineFold[S, A], d: AffineFold[A, B]) = u >>> d
+  def andThen_af[S, A, B](u: AffineFold[S, A], d: AffineFold[A, B]) = u >>> d
 
   def filtered[S](p: Getter[S, Boolean]) = AffineFold.filtered(p)
 
   def as_afl[S, A](gt: Getter[S, A]) = gt
 
-  def getOpt[S, A](af: AffineFold[S, A]) = af.getOpt
+  def preview[S, A](af: AffineFold[S, A]) = af.preview
 }
 
 trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
 
   def id_fl[S] = Category[Fold].id
 
-  def comp_fl[S, A, B](u: Fold[S, A], d: Fold[A, B]) = u >>> d
+  def andThen_fl[S, A, B](u: Fold[S, A], d: Fold[A, B]) = u >>> d
 
   def nonEmpty[S, A](fl: Fold[S, A]) = fl.nonEmpty
 

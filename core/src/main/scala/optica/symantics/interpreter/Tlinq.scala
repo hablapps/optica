@@ -20,7 +20,7 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
 
   /* Getter */
 
-  def comp_gt[S, A, B](
+  def andThen_gt[S, A, B](
       u: Wrap[Repr, Getter[S, A]],
       d: Wrap[Repr, Getter[A, B]]) = (u, d) match {
     case (WrapGetter(f), WrapGetter(g)) => 
@@ -76,7 +76,7 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
 
  def id_af[S] = WrapAffine(lam(some))
 
-  def comp_af[S, A, B](
+  def andThen_af[S, A, B](
       u: Wrap[Repr, AffineFold[S, A]], 
       d: Wrap[Repr, AffineFold[A, B]]) = (u, d) match {
     case (WrapAffine(f), WrapAffine(g)) =>
@@ -91,7 +91,7 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
     case WrapGetter(f) => WrapAffine(lam(s => some(app(f)(s))))
   }
 
-  def getOpt[S, A](af: Wrap[Repr, AffineFold[S, A]]) = af match {
+  def preview[S, A](af: Wrap[Repr, AffineFold[S, A]]) = af match {
     case WrapAffine(f) => f
   }
 
@@ -99,7 +99,7 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
 
  def id_fl[S] = WrapFold(lam(yields))
 
-  def comp_fl[S, A, B](
+  def andThen_fl[S, A, B](
       u: Wrap[Repr, Fold[S, A]], 
       d: Wrap[Repr, Fold[A, B]]) = (u, d) match {
     case (WrapFold(f), WrapFold(g)) =>
