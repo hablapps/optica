@@ -14,12 +14,11 @@ case class WrapAffine[Repr[_], S, A](f: Repr[S => Option[A]])
 case class WrapFold[Repr[_], S, A](f: Repr[S => List[A]]) 
   extends Wrap[Repr, Fold[S, A]]
 
-class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr]) 
-    extends Optica[Wrap[Repr, ?], Repr] {
+trait TlinqGetterSym[Repr[_]] extends GetterSym[Wrap[Repr, ?]] {
+
+  implicit val Q: Tlinq[Repr]
   import Q._
-
-  /* Getter */
-
+  
   def andThen_gt[S, A, B](
       u: Wrap[Repr, Getter[S, A]],
       d: Wrap[Repr, Getter[A, B]]) = (u, d) match {
@@ -67,14 +66,21 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
     case (WrapGetter(f), WrapGetter(g)) =>
       WrapGetter(lam(s => Q.subtract(app(f)(s), app(g)(s))))
   }
+}
+
+trait TlinqGetterAct[Repr[_]] extends GetterAct[Wrap[Repr, ?], Repr] {
 
   def get[S, A](gt: Wrap[Repr, Getter[S, A]]) = gt match {
     case WrapGetter(f) => f
   }
+}
 
-  /* Affine Fold */
+trait TlinqAffineFoldSym[Repr[_]] extends AffineFoldSym[Wrap[Repr, ?]] {
 
- def id_af[S] = WrapAffine(lam(some))
+  implicit val Q: Tlinq[Repr]
+  import Q._
+  
+  def id_af[S] = WrapAffine(lam(some))
 
   def andThen_af[S, A, B](
       u: Wrap[Repr, AffineFold[S, A]], 
@@ -90,14 +96,21 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
   def as_afl[S, A](gt: Wrap[Repr, Getter[S, A]]) = gt match {
     case WrapGetter(f) => WrapAffine(lam(s => some(app(f)(s))))
   }
+}
+
+trait TlinqAffineFoldAct[Repr[_]] extends AffineFoldAct[Wrap[Repr, ?], Repr] {
 
   def preview[S, A](af: Wrap[Repr, AffineFold[S, A]]) = af match {
     case WrapAffine(f) => f
   }
+}
 
-  /* Fold */
+trait TlinqFoldSym[Repr[_]] extends FoldSym[Wrap[Repr, ?]] {
 
- def id_fl[S] = WrapFold(lam(yields))
+  implicit val Q: Tlinq[Repr]
+  import Q._
+  
+  def id_fl[S] = WrapFold(lam(yields))
 
   def andThen_fl[S, A, B](
       u: Wrap[Repr, Fold[S, A]], 
@@ -116,9 +129,18 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
     case WrapAffine(f) => 
       WrapFold(lam(s => ofold(app(f)(s))(nil, lam(yields))))
   }
+}
+
+trait TlinqFoldAct[Repr[_]] extends FoldAct[Wrap[Repr, ?], Repr] {
 
   def getAll[S, A](fl: Wrap[Repr, Fold[S, A]]) = fl match {
     case WrapFold(f) => f
   }
 }
+
+class TlinqSym[Repr[_]](implicit val Q: Tlinq[Repr]) 
+  extends Optica[Wrap[Repr, ?], Repr]
+  with TlinqGetterSym[Repr] with TlinqGetterAct[Repr]
+  with TlinqAffineFoldSym[Repr] with TlinqAffineFoldAct[Repr]
+  with TlinqFoldSym[Repr] with TlinqFoldAct[Repr]
 
