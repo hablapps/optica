@@ -71,9 +71,7 @@ trait TripletFunAffineFoldAct
     const(new Error("unsupported action: `preview`").left)
 }
 
-trait TripletFunFoldSym 
-    extends FoldSym[λ[x => TripletFun], 
-                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
+trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
 
   def id_fl[S] = identity
 
@@ -85,6 +83,11 @@ trait TripletFunFoldSym
   }
 
   def as_fl[S, A](afl: TripletFun) = afl
+}
+
+trait TripletFunFoldAct 
+    extends FoldAct[λ[x => TripletFun], 
+                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def getAll[S, A](fl: TripletFun) = ToSQL.toSql(fl, _)
 }
@@ -94,7 +97,7 @@ class TripletFunSym
                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]]
     with TripletFunGetterSym with TripletFunGetterAct
     with TripletFunAffineFoldSym with TripletFunAffineFoldAct
-    with TripletFunFoldSym /* with TripletFunFoldAct */ {
+    with TripletFunFoldSym with TripletFunFoldAct {
 
   def entity(ot: OpticType, vn: String): TripletFun = {
     case (List(Path(xs)), f, w) => {

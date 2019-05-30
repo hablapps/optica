@@ -5,7 +5,7 @@ import concrete._
 
 trait Optica[Repr[_], Obs[_]] extends GetterSym[Repr] with GetterAct[Repr, Obs]
     with AffineFoldSym[Repr] with AffineFoldAct[Repr, Obs]
-    with FoldSym[Repr, Obs] {
+    with FoldSym[Repr] with FoldAct[Repr, Obs] {
 
   def empty[S, A](fl: Repr[Fold[S, A]]): Repr[Getter[S, Boolean]] =
     not(nonEmpty(fl))
@@ -36,7 +36,8 @@ object Optica {
     new interpreter.TlinqSym[Repr]
 
   trait Syntax extends GetterSym.Syntax with GetterAct.Syntax
-    with AffineFoldSym.Syntax with FoldSym.Syntax
+    with AffineFoldSym.Syntax with AffineFoldAct.Syntax
+    with FoldSym.Syntax with FoldAct.Syntax
 
   object syntax extends Syntax
 }

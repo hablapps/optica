@@ -54,7 +54,7 @@ trait RAffineFoldAct extends AffineFoldAct[λ[x => x], λ[x => x]] {
   def preview[S, A](af: AffineFold[S, A]) = af.preview
 }
 
-trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
+trait RFoldSym extends FoldSym[λ[x => x]] {
 
   def id_fl[S] = Category[Fold].id
 
@@ -63,6 +63,9 @@ trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
   def nonEmpty[S, A](fl: Fold[S, A]) = fl.nonEmpty
 
   def as_fl[S, A](afl: AffineFold[S, A]) = afl
+}
+
+trait RFoldAct extends FoldAct[λ[x => x], λ[x => x]] {
 
   def getAll[S, A](fl: Fold[S, A]) = fl.getAll
 }
@@ -70,5 +73,5 @@ trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
 class R extends Optica[λ[x => x], λ[x => x]]
   with RGetterSym with RGetterAct 
   with RAffineFoldSym with RAffineFoldAct
-  with RFoldSym // with RFoldAct
+  with RFoldSym with RFoldAct
 
