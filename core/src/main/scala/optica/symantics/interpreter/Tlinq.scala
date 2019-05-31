@@ -6,6 +6,8 @@ import tlinq._
 import concrete._
 import Base._
 
+import Tlinq.syntax._
+
 sealed abstract class Wrap[Repr[_], A]
 case class WrapGetter[Repr[_], S, A](f: Repr[S => A]) 
   extends Wrap[Repr, Getter[S, A]]
@@ -30,7 +32,7 @@ trait TlinqGetterSym[Repr[_]] extends GetterSym[Wrap[Repr, ?]] {
       l: Wrap[Repr, Getter[S, A]],
       r: Wrap[Repr, Getter[S, B]]) = (l, r) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => product(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) *** app(g)(s)))
   }
 
   def id_gt[S] = WrapGetter(lam(identity))
@@ -50,21 +52,21 @@ trait TlinqGetterSym[Repr[_]] extends GetterSym[Wrap[Repr, ?]] {
       x: Wrap[Repr, Getter[S, A]],
       y: Wrap[Repr, Getter[S, A]]) = (x, y) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => Q.equal(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) === app(g)(s)))
   }
 
   def greaterThan[S](
       x: Wrap[Repr, Getter[S, Int]], 
       y: Wrap[Repr, Getter[S, Int]]) = (x, y) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => Q.greaterThan(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) > app(g)(s)))
   }
 
   def subtract[S](
       x: Wrap[Repr, Getter[S, Int]], 
       y: Wrap[Repr, Getter[S, Int]]) = (x, y) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => Q.subtract(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) - app(g)(s)))
   }
 }
 

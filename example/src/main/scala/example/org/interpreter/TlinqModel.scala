@@ -6,6 +6,7 @@ import optica.symantics.interpreter._
 
 import Tlinq.syntax._
 import Schema.syntax._
+import Nested.syntax._
 
 case class DepartmentRel(dpt: String)
 case class EmployeeRel(emp: String, dpt: String)
@@ -13,7 +14,7 @@ case class TaskRel(tsk: String, emp: String)
 
 class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr]) 
     extends Model[Wrap[Repr, ?]] {
-  import Q._, Nested.syntax._
+  import Q._
 
   def departments = WrapFold(lam(identity))
 
