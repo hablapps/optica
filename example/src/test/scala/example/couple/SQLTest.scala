@@ -9,6 +9,7 @@ import sql._
 import triplet._
 import doobie._
 import doobie.implicits._
+import Logic._
 
 class SQLTest extends FlatSpec with Matchers {
 

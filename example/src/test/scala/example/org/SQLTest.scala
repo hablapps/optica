@@ -9,6 +9,7 @@ import doobie.implicits._
 import optica._
 import sql._
 import triplet._
+import Logic._
 
 class SQLTest extends FlatSpec with Matchers {
 

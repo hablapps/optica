@@ -2,6 +2,7 @@ package example
 package couple
 
 import _root_.org.scalatest._
+import Logic._
 
 class RTest extends FlatSpec with Matchers {
 

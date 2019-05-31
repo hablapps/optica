@@ -7,6 +7,7 @@ import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
 import couple.interpreter.{Nested, Schema}
+import Logic._
 
 class TlinqTest extends FlatSpec with Matchers {
 

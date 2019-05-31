@@ -7,6 +7,7 @@ import _root_.org.scalatest._
 import optica._
 import xquery._
 import scala.collection.JavaConverters._
+import Logic._
 
 class XQueryTest extends FlatSpec with Matchers {
 

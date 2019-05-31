@@ -7,6 +7,7 @@ import xquery._
 import _root_.org.basex.core._
 import _root_.org.basex.query._
 import scala.collection.JavaConverters._
+import Logic._
 
 class XQueryTest extends FlatSpec with Matchers {
 
