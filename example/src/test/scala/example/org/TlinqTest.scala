@@ -6,7 +6,7 @@ import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
-import interpreter.Nested
+import interpreter.{Nested, Schema}
 
 class TlinqTest extends FlatSpec with Matchers {
 
@@ -16,9 +16,14 @@ class TlinqTest extends FlatSpec with Matchers {
   def expertiseTlinq(u: String): Org => List[String] =
     expertise[Wrap[λ[x => x], ?], λ[x => x]](u)
 
-  "Optica" should "translate expertise into a fold" in {
+  "Optica" should "translate expertise into a function" in {
     expertiseTlinq("abstract")(Nested[λ[x => x]]) shouldBe 
       List("Quality", "Research")
+  }
+
+  it should "work exactly the same as the raw T-Linq expertise query" in {
+    expertiseTlinq("abstract")(Nested[λ[x => x]]) shouldBe
+      Schema.expertise[λ[x => x]]("abstract")
   }
 
   implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]

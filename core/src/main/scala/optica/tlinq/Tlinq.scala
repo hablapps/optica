@@ -51,5 +51,31 @@ object Tlinq {
   implicit object RTlinq extends interpreter.R
 
   implicit object ToStrinTlinq extends interpreter.ToString
+
+  trait Syntax {
+
+    implicit class TlinqOps[Repr[_], A](a: Repr[A])(implicit Q: Tlinq[Repr]) {
+      
+      def ===(a2: Repr[A]): Repr[Boolean] = Q.equal(a, a2)
+
+      def ***[B](b: Repr[B]): Repr[(A, B)] = Q.product(a, b)
+    }
+
+    implicit class TlinqIntOps[Repr[_]](i: Repr[Int])(implicit Q: Tlinq[Repr]) {
+      
+      def -(j: Repr[Int]): Repr[Int] = Q.subtract(i, j)
+
+      def >(j: Repr[Int]): Repr[Boolean] = Q.greaterThan(i, j)
+    }
+
+    implicit class TlinqBooleanOps[Repr[_]](
+        b: Repr[Boolean])(implicit
+        Q: Tlinq[Repr]) {
+      
+      def &&(b2: Repr[Boolean]): Repr[Boolean] = Q.and(b, b2)
+    }
+  }
+
+  object syntax extends Syntax
 }
 

@@ -4,6 +4,9 @@ package interpreter
 import optica.tlinq._
 import optica.symantics.interpreter._
 
+import Tlinq.syntax._
+import Schema.syntax._
+
 case class DepartmentRel(dpt: String)
 case class EmployeeRel(emp: String, dpt: String)
 case class TaskRel(tsk: String, emp: String)
@@ -43,6 +46,22 @@ trait Schema[Repr[_]] {
 }
 
 object Schema {
+
+  def expertise[Repr[_]](
+      u: String)(implicit
+      Q: Tlinq[Repr],
+      S: Schema[Repr]): Repr[List[String]] = {
+    import Q._, S._
+    foreach(table_department)(d =>
+    where(not(exists(
+      foreach(table_employee)(e =>
+      where(d.dpt === e.dpt && not(exists(
+        foreach(table_task)(t => 
+        where(e.emp === t.emp && t.tsk === string(u))(   
+        yields(t.tsk))))))(
+      yields(e.emp))))))(
+    yields(d.dpt)))
+  }
 
   implicit object RSchema extends Schema[λ[x => x]] {
     def dpt(d: DepartmentRel) = d.dpt
