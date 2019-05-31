@@ -20,7 +20,7 @@ class TlinqTest extends FlatSpec with Matchers {
     differencesTlinq(Nested[λ[x => x]]) shouldBe List("Alex" -> 5, "Cora" -> 2) 
   }
 
-  it should "work exactly the same as the raw T-Linq query" in {
+  it should "work exactly the same as the raw T-Linq differences query" in {
     differencesTlinq(Nested[λ[x => x]]) shouldBe Schema.differences[λ[x => x]]
   }
 
