@@ -7,14 +7,15 @@ import _root_.org.scalatest._
 import optica._
 import xquery._
 import scala.collection.JavaConverters._
+import Logic._
 
 class XQueryTest extends FlatSpec with Matchers {
 
-  object CoupleLogicXQuery extends Logic[λ[x => XQuery], λ[x => XQuery]]
-  import CoupleLogicXQuery.differences
+  val differencesXQuery: XQuery =
+    differences[λ[x => XQuery], λ[x => XQuery]]
 
   "Optica" should "translate differences into an XQuery expression" in {
-    differences.toString shouldBe 
+    differencesXQuery.toString shouldBe 
       "/xml/couple[her/age > him/age]/<tuple><fst>{her/name}</fst><snd>{her/age - him/age}</snd></tuple>"
   }
 
@@ -27,7 +28,7 @@ class XQueryTest extends FlatSpec with Matchers {
       new QueryProcessor(str, context).value().asScala.map(_.toString).toList
     }
 
-    val query = differences.toString
+    val query = differencesXQuery.toString
 
     process(query)("example/src/test/resources/couple.xml") shouldBe 
       List(""""Alex5"""",""""Cora2"""")

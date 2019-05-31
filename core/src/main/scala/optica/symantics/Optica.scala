@@ -3,8 +3,9 @@ package symantics
 
 import concrete._
 
-trait Optica[Repr[_], Obs[_]] extends GetterSym[Repr, Obs] 
-    with AffineFoldSym[Repr, Obs] with FoldSym[Repr, Obs] {
+trait Optica_[Repr[_]] extends GetterSym[Repr]
+    with AffineFoldSym[Repr]
+    with FoldSym[Repr] {
 
   def empty[S, A](fl: Repr[Fold[S, A]]): Repr[Getter[S, Boolean]] =
     not(nonEmpty(fl))
@@ -23,6 +24,11 @@ trait Optica[Repr[_], Obs[_]] extends GetterSym[Repr, Obs]
     any(fl)(equal(id_gt, like(a)))
 }
 
+trait Optica[Repr[_], Obs[_]] extends Optica_[Repr]
+    with GetterAct[Repr, Obs] 
+    with AffineFoldAct[Repr, Obs]
+    with FoldAct[Repr, Obs]
+
 object Optica {
 
   implicit object ROptica extends interpreter.R
@@ -31,13 +37,12 @@ object Optica {
 
   implicit object TripletFunOptica extends interpreter.TripletFunSym
 
-  implicit object QuillOptica extends interpreter.QuillSym
-
   implicit def tlinqOptica[Repr[_]: tlinq.Tlinq]: interpreter.TlinqSym[Repr] =
     new interpreter.TlinqSym[Repr]
 
-  trait Syntax extends GetterSym.Syntax 
-    with AffineFoldSym.Syntax with FoldSym.Syntax
+  trait Syntax extends GetterSym.Syntax with GetterAct.Syntax
+    with AffineFoldSym.Syntax with AffineFoldAct.Syntax
+    with FoldSym.Syntax with FoldAct.Syntax
 
   object syntax extends Syntax
 }

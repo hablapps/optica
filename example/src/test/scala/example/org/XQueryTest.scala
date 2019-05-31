@@ -7,14 +7,15 @@ import xquery._
 import _root_.org.basex.core._
 import _root_.org.basex.query._
 import scala.collection.JavaConverters._
+import Logic._
 
 class XQueryTest extends FlatSpec with Matchers {
 
-  object OrgLogicXQuery extends Logic[λ[x => XQuery], λ[x => XQuery]]
-  import OrgLogicXQuery.expertise
+  def expertiseXQuery(u: String): XQuery =
+    expertise[λ[x => XQuery], λ[x => XQuery]](u)
 
   "Optica" should "translate expertise into an XQuery expression" in {
-    expertise("abstract").toString shouldBe 
+    expertiseXQuery("abstract").toString shouldBe 
       """/xml/department[not(exists(employee[not(exists(task/tsk[. = "abstract"]))]))]/dpt"""
   }
 
@@ -27,7 +28,7 @@ class XQueryTest extends FlatSpec with Matchers {
       new QueryProcessor(str, context).value().asScala.map(_.toString).toList
     }
 
-    val query = expertise("abstract").toString
+    val query = expertiseXQuery("abstract").toString
 
     process(query)("example/src/test/resources/org.xml") shouldBe 
       List(""""Quality"""", """"Research"""")

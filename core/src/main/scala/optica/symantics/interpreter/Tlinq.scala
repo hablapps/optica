@@ -6,6 +6,8 @@ import tlinq._
 import concrete._
 import Base._
 
+import Tlinq.syntax._
+
 sealed abstract class Wrap[Repr[_], A]
 case class WrapGetter[Repr[_], S, A](f: Repr[S => A]) 
   extends Wrap[Repr, Getter[S, A]]
@@ -14,12 +16,11 @@ case class WrapAffine[Repr[_], S, A](f: Repr[S => Option[A]])
 case class WrapFold[Repr[_], S, A](f: Repr[S => List[A]]) 
   extends Wrap[Repr, Fold[S, A]]
 
-class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr]) 
-    extends Optica[Wrap[Repr, ?], Repr] {
+trait TlinqGetterSym[Repr[_]] extends GetterSym[Wrap[Repr, ?]] {
+
+  implicit val Q: Tlinq[Repr]
   import Q._
-
-  /* Getter */
-
+  
   def andThen_gt[S, A, B](
       u: Wrap[Repr, Getter[S, A]],
       d: Wrap[Repr, Getter[A, B]]) = (u, d) match {
@@ -31,7 +32,7 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
       l: Wrap[Repr, Getter[S, A]],
       r: Wrap[Repr, Getter[S, B]]) = (l, r) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => product(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) *** app(g)(s)))
   }
 
   def id_gt[S] = WrapGetter(lam(identity))
@@ -51,30 +52,37 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
       x: Wrap[Repr, Getter[S, A]],
       y: Wrap[Repr, Getter[S, A]]) = (x, y) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => Q.equal(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) === app(g)(s)))
   }
 
   def greaterThan[S](
       x: Wrap[Repr, Getter[S, Int]], 
       y: Wrap[Repr, Getter[S, Int]]) = (x, y) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => Q.greaterThan(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) > app(g)(s)))
   }
 
   def subtract[S](
       x: Wrap[Repr, Getter[S, Int]], 
       y: Wrap[Repr, Getter[S, Int]]) = (x, y) match {
     case (WrapGetter(f), WrapGetter(g)) =>
-      WrapGetter(lam(s => Q.subtract(app(f)(s), app(g)(s))))
+      WrapGetter(lam(s => app(f)(s) - app(g)(s)))
   }
+}
+
+trait TlinqGetterAct[Repr[_]] extends GetterAct[Wrap[Repr, ?], Repr] {
 
   def get[S, A](gt: Wrap[Repr, Getter[S, A]]) = gt match {
     case WrapGetter(f) => f
   }
+}
 
-  /* Affine Fold */
+trait TlinqAffineFoldSym[Repr[_]] extends AffineFoldSym[Wrap[Repr, ?]] {
 
- def id_af[S] = WrapAffine(lam(some))
+  implicit val Q: Tlinq[Repr]
+  import Q._
+  
+  def id_af[S] = WrapAffine(lam(some))
 
   def andThen_af[S, A, B](
       u: Wrap[Repr, AffineFold[S, A]], 
@@ -90,14 +98,21 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
   def as_afl[S, A](gt: Wrap[Repr, Getter[S, A]]) = gt match {
     case WrapGetter(f) => WrapAffine(lam(s => some(app(f)(s))))
   }
+}
+
+trait TlinqAffineFoldAct[Repr[_]] extends AffineFoldAct[Wrap[Repr, ?], Repr] {
 
   def preview[S, A](af: Wrap[Repr, AffineFold[S, A]]) = af match {
     case WrapAffine(f) => f
   }
+}
 
-  /* Fold */
+trait TlinqFoldSym[Repr[_]] extends FoldSym[Wrap[Repr, ?]] {
 
- def id_fl[S] = WrapFold(lam(yields))
+  implicit val Q: Tlinq[Repr]
+  import Q._
+  
+  def id_fl[S] = WrapFold(lam(yields))
 
   def andThen_fl[S, A, B](
       u: Wrap[Repr, Fold[S, A]], 
@@ -116,9 +131,18 @@ class TlinqSym[Repr[_]](implicit Q: Tlinq[Repr])
     case WrapAffine(f) => 
       WrapFold(lam(s => ofold(app(f)(s))(nil, lam(yields))))
   }
+}
+
+trait TlinqFoldAct[Repr[_]] extends FoldAct[Wrap[Repr, ?], Repr] {
 
   def getAll[S, A](fl: Wrap[Repr, Fold[S, A]]) = fl match {
     case WrapFold(f) => f
   }
 }
+
+class TlinqSym[Repr[_]](implicit val Q: Tlinq[Repr]) 
+  extends Optica[Wrap[Repr, ?], Repr]
+  with TlinqGetterSym[Repr] with TlinqGetterAct[Repr]
+  with TlinqAffineFoldSym[Repr] with TlinqAffineFoldAct[Repr]
+  with TlinqFoldSym[Repr] with TlinqFoldAct[Repr]
 

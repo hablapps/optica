@@ -9,9 +9,7 @@ import scalaz._, Scalaz._
 import triplet._, triplet.interpreter.ToSQL
 import sql._
 
-trait TripletFunGetterSym 
-    extends GetterSym[λ[x => TripletFun],
-                      λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
+trait TripletFunGetterSym extends GetterSym[λ[x => TripletFun]] {
 
   def id_gt[S] = identity
 
@@ -40,14 +38,17 @@ trait TripletFunGetterSym
   def greaterThan[S](x: TripletFun, y: TripletFun) = binary(x, y)(GreaterThan)
 
   def subtract[S](x: TripletFun, y: TripletFun) = binary(x, y)(Sub)
+}
+
+trait TripletFunGetterAct 
+    extends GetterAct[λ[x => TripletFun],
+                      λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def get[S, A](gt: TripletFun) = 
     const(new Error("unsupported action: `get`").left)
 }
 
-trait TripletFunAffineFoldSym 
-    extends AffineFoldSym[λ[x => TripletFun],
-                          λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
+trait TripletFunAffineFoldSym extends AffineFoldSym[λ[x => TripletFun]] {
 
   def id_af[S] = identity
 
@@ -60,14 +61,17 @@ trait TripletFunAffineFoldSym
   }
 
   def as_afl[S, A](gt: TripletFun) = gt
+}
+
+trait TripletFunAffineFoldAct 
+    extends AffineFoldAct[λ[x => TripletFun],
+                          λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def preview[S, A](af: TripletFun) = 
     const(new Error("unsupported action: `preview`").left)
 }
 
-trait TripletFunFoldSym 
-    extends FoldSym[λ[x => TripletFun], 
-                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
+trait TripletFunFoldSym extends FoldSym[λ[x => TripletFun]] {
 
   def id_fl[S] = identity
 
@@ -79,6 +83,11 @@ trait TripletFunFoldSym
   }
 
   def as_fl[S, A](afl: TripletFun) = afl
+}
+
+trait TripletFunFoldAct 
+    extends FoldAct[λ[x => TripletFun], 
+                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]] {
 
   def getAll[S, A](fl: TripletFun) = ToSQL.toSql(fl, _)
 }
@@ -86,9 +95,9 @@ trait TripletFunFoldSym
 class TripletFunSym 
     extends Optica[λ[x => TripletFun], 
                    λ[x => TypeNme ==>> FieldNme => Error \/ SSelect]]
-    with TripletFunGetterSym 
-    with TripletFunAffineFoldSym 
-    with TripletFunFoldSym {
+    with TripletFunGetterSym with TripletFunGetterAct
+    with TripletFunAffineFoldSym with TripletFunAffineFoldAct
+    with TripletFunFoldSym with TripletFunFoldAct {
 
   def entity(ot: OpticType, vn: String): TripletFun = {
     case (List(Path(xs)), f, w) => {

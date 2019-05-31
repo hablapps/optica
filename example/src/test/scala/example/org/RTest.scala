@@ -2,6 +2,7 @@ package example
 package org
 
 import _root_.org.scalatest._
+import Logic._
 
 class RTest extends FlatSpec with Matchers {
 
@@ -17,11 +18,11 @@ class RTest extends FlatSpec with Matchers {
     Department("Sales", List(
       Employee("Fred", List(Task("call"))))))
 
-  object OrgLogicR extends Logic[λ[x => x], λ[x => x]]
-  import OrgLogicR.expertise
+  def expertiseR(u: String): Org => List[String] =
+    expertise[λ[x => x], λ[x => x]](u)
 
   "Optica" should "translate expertise into a fold" in {
-    expertise("abstract")(data) shouldBe List("Quality", "Research")
+    expertiseR("abstract")(data) shouldBe List("Quality", "Research")
   }
 }
 

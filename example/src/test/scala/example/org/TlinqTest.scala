@@ -6,25 +6,35 @@ import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
-import interpreter.Nested
+import interpreter.{Nested, Schema}
+import Logic._
 
 class TlinqTest extends FlatSpec with Matchers {
 
   implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
   implicit val _2 = Model.tlinqModel[λ[x => x]]
 
-  object OrgLogicTlinq extends Logic[Wrap[λ[x => x], ?], λ[x => x]]
-  import OrgLogicTlinq.expertise
+  def expertiseTlinq(u: String): Org => List[String] =
+    expertise[Wrap[λ[x => x], ?], λ[x => x]](u)
+
+  "Optica" should "translate expertise into a function" in {
+    expertiseTlinq("abstract")(Nested[λ[x => x]]) shouldBe 
+      List("Quality", "Research")
+  }
+
+  it should "work exactly the same as the raw T-Linq expertise query" in {
+    expertiseTlinq("abstract")(Nested[λ[x => x]]) shouldBe
+      Schema.expertise[λ[x => x]]("abstract")
+  }
 
   implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]
   implicit val _4 = Model.tlinqModel[λ[x => Int => String]]
   val _5 = implicitly[tlinq.Tlinq[λ[x => Int => String]]]
 
-  object OrgLogicTlinqShow 
-    extends Logic[Wrap[λ[x => Int => String], ?], λ[x => Int => String]]
-  import OrgLogicTlinqShow.{expertise => expertiseShow}
+  def expertiseTlinqShow(u: String): Int => String =
+    expertise[Wrap[λ[x => Int => String], ?], λ[x => Int => String]](u)
 
-  _5.app(expertiseShow("abstract"))(Nested[λ[x => Int => String]])(0)
+  _5.app(expertiseTlinqShow("abstract"))(Nested[λ[x => Int => String]])(0)
 
   // generates ...
   //
@@ -44,10 +54,5 @@ class TlinqTest extends FlatSpec with Matchers {
   // x3)))(x1)) yield x2)(for (x0 <- table_department) yield Department(x0.dpt,
   // for (x1 <- table_employee) where x0.dpt == x1.dpt yield Employee(x1.emp,
   // for (x2 <- table_task) where x1.emp == x2.emp yield Task(x2.tsk))))
-
-  "Optica" should "translate expertise into a fold" in {
-    expertise("abstract")(Nested[λ[x => x]]) shouldBe 
-      List("Quality", "Research")
-  }
 }
 

@@ -5,7 +5,7 @@ package interpreter
 import xquery._
 import Base._
 
-trait XQueryGetterSym extends GetterSym[λ[x => XQuery], λ[x => XQuery]] {
+trait XQueryGetterSym extends GetterSym[λ[x => XQuery]] {
 
   def id_gt[S] = Self
 
@@ -26,11 +26,14 @@ trait XQueryGetterSym extends GetterSym[λ[x => XQuery], λ[x => XQuery]] {
   def greaterThan[S](x: XQuery, y: XQuery) = Oper(">", x, y)
 
   def subtract[S](x: XQuery, y: XQuery) = Oper("-", x, y)
+}
+
+trait XQueryGetterAct extends GetterAct[λ[x => XQuery], λ[x => XQuery]] {
 
   def get[S, A](gt: XQuery) = Seq(Document, Seq(Name("xml"), gt))
 }
 
-trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery], λ[x => XQuery]] {
+trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery]] {
 
   def id_af[S] = Self
   
@@ -39,11 +42,14 @@ trait XQueryAffineFoldSym extends AffineFoldSym[λ[x => XQuery], λ[x => XQuery]
   def filtered[S](p: XQuery) = Filter(p)
 
   def as_afl[S, A](gt: XQuery) = gt
+}
+
+trait XQueryAffineFoldAct extends AffineFoldAct[λ[x => XQuery], λ[x => XQuery]] {
 
   def preview[S, A](fl: XQuery) = Seq(Document, Seq(Name("xml"), fl))
 }
 
-trait XQueryFoldSym extends FoldSym[λ[x => XQuery], λ[x => XQuery]] {
+trait XQueryFoldSym extends FoldSym[λ[x => XQuery]] {
 
   def id_fl[S] = Self
 
@@ -52,10 +58,15 @@ trait XQueryFoldSym extends FoldSym[λ[x => XQuery], λ[x => XQuery]] {
   def nonEmpty[S, A](fl: XQuery) = Func("exists", fl)
 
   def as_fl[S, A](afl: XQuery) = afl
+}
+
+trait XQueryFoldAct extends FoldAct[λ[x => XQuery], λ[x => XQuery]] {
 
   def getAll[S, A](fl: XQuery) = Seq(Document, Seq(Name("xml"), fl))
 }
 
 class XQuerySym extends Optica[λ[x => XQuery], λ[x => XQuery]]
-  with XQueryGetterSym with XQueryAffineFoldSym with XQueryFoldSym
+  with XQueryGetterSym with XQueryGetterAct 
+  with XQueryAffineFoldSym with XQueryAffineFoldAct
+  with XQueryFoldSym with XQueryFoldAct
 

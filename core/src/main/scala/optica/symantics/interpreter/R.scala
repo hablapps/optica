@@ -7,7 +7,7 @@ import concrete._
 import CategoryWithProduct.syntax._, Getter.syntax._, Fold.syntax._
 import Base._
 
-trait RGetterSym extends GetterSym[λ[x => x], λ[x => x]] {
+trait RGetterSym extends GetterSym[λ[x => x]] {
 
   def andThen_gt[S, A, B](u: Getter[S, A], d: Getter[A, B]) = u >>> d
 
@@ -31,11 +31,14 @@ trait RGetterSym extends GetterSym[λ[x => x], λ[x => x]] {
   def greaterThan[S](x: Getter[S, Int], y: Getter[S, Int]) = x > y
 
   def subtract[S](x: Getter[S, Int], y: Getter[S, Int]) = x - y
+}
+
+trait RGetterAct extends GetterAct[λ[x => x], λ[x => x]] {
 
   def get[S, A](gt: Getter[S, A]) = gt.get
 }
 
-trait RAffineFoldSym extends AffineFoldSym[λ[x => x], λ[x => x]] {
+trait RAffineFoldSym extends AffineFoldSym[λ[x => x]] {
 
   def id_af[S] = Category[AffineFold].id
 
@@ -44,11 +47,14 @@ trait RAffineFoldSym extends AffineFoldSym[λ[x => x], λ[x => x]] {
   def filtered[S](p: Getter[S, Boolean]) = AffineFold.filtered(p)
 
   def as_afl[S, A](gt: Getter[S, A]) = gt
+}
+
+trait RAffineFoldAct extends AffineFoldAct[λ[x => x], λ[x => x]] {
 
   def preview[S, A](af: AffineFold[S, A]) = af.preview
 }
 
-trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
+trait RFoldSym extends FoldSym[λ[x => x]] {
 
   def id_fl[S] = Category[Fold].id
 
@@ -57,10 +63,15 @@ trait RFoldSym extends FoldSym[λ[x => x], λ[x => x]] {
   def nonEmpty[S, A](fl: Fold[S, A]) = fl.nonEmpty
 
   def as_fl[S, A](afl: AffineFold[S, A]) = afl
+}
+
+trait RFoldAct extends FoldAct[λ[x => x], λ[x => x]] {
 
   def getAll[S, A](fl: Fold[S, A]) = fl.getAll
 }
 
 class R extends Optica[λ[x => x], λ[x => x]]
-  with RGetterSym with RAffineFoldSym with RFoldSym
+  with RGetterSym with RGetterAct 
+  with RAffineFoldSym with RAffineFoldAct
+  with RFoldSym with RFoldAct
 

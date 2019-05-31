@@ -3,7 +3,7 @@ package symantics
 
 import concrete._
 
-trait AffineFoldSym[Repr[_], Obs[_]] {
+trait AffineFoldSym[Repr[_]] {
 
   def id_af[S]: Repr[AffineFold[S, S]]
 
@@ -14,27 +14,23 @@ trait AffineFoldSym[Repr[_], Obs[_]] {
   def filtered[S](p: Repr[Getter[S, Boolean]]): Repr[AffineFold[S, S]]
 
   def as_afl[S, A](gt: Repr[Getter[S, A]]): Repr[AffineFold[S, A]]
-
-  def preview[S, A](af: Repr[AffineFold[S, A]]): Obs[S => Option[A]]
 }
 
 object AffineFoldSym {
 
   trait Syntax {
 
-    implicit class AffineFoldOps[Repr[_], Obs[_], S, A](
+    implicit class AffineFoldOps[Repr[_], S, A](
         af: Repr[AffineFold[S, A]])(implicit 
-        ev: AffineFoldSym[Repr, Obs]) {
+        ev: AffineFoldSym[Repr]) {
           
       def >>>[B](other: Repr[AffineFold[A, B]]): Repr[AffineFold[S, B]] =
         ev.andThen_af(af, other)
-
-      def preview: Obs[S => Option[A]] = ev.preview(af)
     }
 
-    implicit def gt_as_afl[Repr[_], Obs[_], S, A](
+    implicit def gt_as_afl[Repr[_], S, A](
         af: Repr[Getter[S, A]])(implicit
-        ev: AffineFoldSym[Repr, Obs]): Repr[AffineFold[S, A]] =
+        ev: AffineFoldSym[Repr]): Repr[AffineFold[S, A]] =
       ev.as_afl(af)
   }
 

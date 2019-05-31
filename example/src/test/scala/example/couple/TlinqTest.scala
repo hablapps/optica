@@ -6,25 +6,33 @@ import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
 import _root_.org.scalatest._
-import couple.interpreter.Nested
+import couple.interpreter.{Nested, Schema}
+import Logic._
 
 class TlinqTest extends FlatSpec with Matchers {
 
   implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
   implicit val _2 = Model.tlinqModel[λ[x => x]]
 
-  object CoupleLogicTlinq extends Logic[Wrap[λ[x => x], ?], λ[x => x]]
-  import CoupleLogicTlinq.differences
+  val differencesTlinq: Couples => List[(String, Int)] =
+    differences[Wrap[λ[x => x], ?], λ[x => x]]
+
+  "Optica" should "translate differences into a function" in {
+    differencesTlinq(Nested[λ[x => x]]) shouldBe List("Alex" -> 5, "Cora" -> 2) 
+  }
+
+  it should "work exactly the same as the raw T-Linq differences query" in {
+    differencesTlinq(Nested[λ[x => x]]) shouldBe Schema.differences[λ[x => x]]
+  }
 
   implicit val _3 = symantics.Optica.tlinqOptica[λ[x => Int => String]]
   implicit val _4 = Model.tlinqModel[λ[x => Int => String]]
   val _5 = implicitly[tlinq.Tlinq[λ[x => Int => String]]]
 
-  object CoupleLogicTlinqShow 
-    extends Logic[Wrap[λ[x => Int => String], ?], λ[x => Int => String]]
-  import CoupleLogicTlinqShow.{differences => differencesShow}
+  val differencesTlinqShow: Int => String =
+    differences[Wrap[λ[x => Int => String], ?], λ[x => Int => String]]
 
-  _5.app(differencesShow)(Nested[λ[x => Int => String]])(0)
+  _5.app(differencesTlinqShow)(Nested[λ[x => Int => String]])(0)
 
   // generates...
   //
@@ -39,9 +47,5 @@ class TlinqTest extends FlatSpec with Matchers {
   // yield x2)(for (x0 <- table_couple) for (x1 <- table_person) for (x2 <-
   // table_person) where x0.her == x2.name && x0.him == x1.name yield
   // Couple(Person(x2.name, x2.age), Person(x1.name, x1.age)))
-
-  "Optica" should "translate differences into a fold" in {
-    differences(Nested[λ[x => x]]) shouldBe List("Alex" -> 5, "Cora" -> 2) 
-  }
 }
 

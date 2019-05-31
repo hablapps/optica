@@ -4,6 +4,9 @@ package interpreter
 import optica.tlinq._
 import optica.symantics.interpreter._
 
+import Tlinq.syntax._
+import Schema.syntax._
+
 case class CoupleRel(her: String, him: String)
 case class PersonRel(name: String, age: Int)
 
@@ -38,6 +41,17 @@ trait Schema[Repr[_]] {
 }
 
 object Schema {
+  
+  def differences[Repr[_]](implicit
+      Q: Tlinq[Repr],
+      S: Schema[Repr]): Repr[List[(String, Int)]] = {
+    import Q._, S._
+    foreach(table_couple)(c =>
+    foreach(table_person)(w =>
+    foreach(table_person)(m =>
+    where((c.her === w.name) && (c.him === m.name) && (w.age > m.age))(
+    yields(w.name *** (w.age - m.age))))))
+  }
   
   implicit object RSchema extends Schema[λ[x => x]] {
 
@@ -114,7 +128,6 @@ trait Nested[Repr[_]] {
 }
 
 object Nested {
-  import Schema.syntax._
 
   def apply[Repr[_]](implicit 
       Q: Tlinq[Repr],
@@ -124,10 +137,10 @@ object Nested {
     foreach(table_couple)(c =>
     foreach(table_person)(m =>
     foreach(table_person)(w =>
-    where(and(equal(c.her, w.name), equal(c.him, m.name)))(
+    where(c.her === w.name && c.him === m.name)(
     yields(Couple(Person(w.name, w.age), Person(m.name, m.age)))))))
   }
-  
+
   implicit object RNested extends Nested[λ[x => x]] {
 
     def Couple(her: Person, him: Person) = example.couple.Couple(her, him)
