@@ -44,6 +44,9 @@ trait Tlinq[Repr[_]] {
   def none[A]: Repr[Option[A]]
 
   def ofold[A, B](oa: Repr[Option[A]])(z: Repr[B], f: Repr[A => B]): Repr[B]
+
+  def foreach_fl[A, B](oa: Repr[Option[A]])(f: Repr[A] => Repr[Option[B]]): Repr[Option[B]] =
+    ofold(oa)(none[B], lam(f))
 }
 
 object Tlinq {
@@ -55,14 +58,14 @@ object Tlinq {
   trait Syntax {
 
     implicit class TlinqOps[Repr[_], A](a: Repr[A])(implicit Q: Tlinq[Repr]) {
-      
+
       def ===(a2: Repr[A]): Repr[Boolean] = Q.equal(a, a2)
 
       def ***[B](b: Repr[B]): Repr[(A, B)] = Q.product(a, b)
     }
 
     implicit class TlinqIntOps[Repr[_]](i: Repr[Int])(implicit Q: Tlinq[Repr]) {
-      
+
       def -(j: Repr[Int]): Repr[Int] = Q.subtract(i, j)
 
       def >(j: Repr[Int]): Repr[Boolean] = Q.greaterThan(i, j)
@@ -71,7 +74,7 @@ object Tlinq {
     implicit class TlinqBooleanOps[Repr[_]](
         b: Repr[Boolean])(implicit
         Q: Tlinq[Repr]) {
-      
+
       def &&(b2: Repr[Boolean]): Repr[Boolean] = Q.and(b, b2)
     }
   }

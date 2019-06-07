@@ -10,13 +10,13 @@ import Schema.syntax._
 case class CoupleRel(her: String, him: String)
 case class PersonRel(name: String, age: Int)
 
-class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr]) 
+class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr])
     extends Model[Wrap[Repr, ?]] {
   import Q._, Nested.syntax._
 
   val couples = WrapFold(lam(identity))
 
-  val her = WrapGetter(lam(c => c.her))
+  val her = WrapGetter(lam{c: Repr[Couple] => N.her(c) })
 
   val him = WrapGetter(lam(c => c.him))
 
@@ -24,24 +24,24 @@ class TlinqModel[Repr[_]](implicit Q: Tlinq[Repr], N: Nested[Repr])
 
   val age = WrapGetter(lam(p => p.age))
 }
-      
+
 trait Schema[Repr[_]] {
 
   def table_couple: Repr[List[CoupleRel]]
 
   def her(c: Repr[CoupleRel]): Repr[String]
-  
+
   def him(c: Repr[CoupleRel]): Repr[String]
 
   def table_person: Repr[List[PersonRel]]
 
   def name(p: Repr[PersonRel]): Repr[String]
-  
+
   def age(p: Repr[PersonRel]): Repr[Int]
 }
 
 object Schema {
-  
+
   def differences[Repr[_]](implicit
       Q: Tlinq[Repr],
       S: Schema[Repr]): Repr[List[(String, Int)]] = {
@@ -52,12 +52,12 @@ object Schema {
     where((c.her === w.name) && (c.him === m.name) && (w.age > m.age))(
     yields(w.name *** (w.age - m.age))))))
   }
-  
+
   implicit object RSchema extends Schema[λ[x => x]] {
 
     def table_person = List(
-      PersonRel("Alex", 60), 
-      PersonRel("Bert", 55), 
+      PersonRel("Alex", 60),
+      PersonRel("Bert", 55),
       PersonRel("Cora", 33),
       PersonRel("Drew", 31),
       PersonRel("Edna", 21),
@@ -80,13 +80,13 @@ object Schema {
   implicit object ToStringSchema extends Schema[λ[x => Int => String]] {
 
     def table_couple = _ => "table_couple"
-    
+
     def her(c: Int => String) = i => s"${c(i)}.her"
 
     def him(c: Int => String) = i => s"${c(i)}.him"
 
     def table_person = _ => "table_person"
-    
+
     def name(p: Int => String) = i => s"${p(i)}.name"
 
     def age(p: Int => String) = i => s"${p(i)}.age"
@@ -129,7 +129,7 @@ trait Nested[Repr[_]] {
 
 object Nested {
 
-  def apply[Repr[_]](implicit 
+  def apply[Repr[_]](implicit
       Q: Tlinq[Repr],
       S: Schema[Repr],
       N: Nested[Repr]): Repr[Couples] = {
@@ -171,7 +171,7 @@ object Nested {
     }
 
     def name(p: Int => String) = i => s"${p(i)}.name"
-    
+
     def age(p: Int => String) = i => s"${p(i)}.age"
   }
 

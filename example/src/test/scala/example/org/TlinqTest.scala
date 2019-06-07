@@ -1,7 +1,7 @@
 package example
 package org
 
-import optica._
+import optica._, tlinq.Tlinq, symantics.Optica
 import symantics.interpreter.Wrap
 import symantics.Optica.tlinqOptica
 
@@ -14,11 +14,16 @@ class TlinqTest extends FlatSpec with Matchers {
   implicit val _1 = symantics.Optica.tlinqOptica[λ[x => x]]
   implicit val _2 = Model.tlinqModel[λ[x => x]]
 
+  def expertiseTlinqGen[Repr[_]](u: String)(implicit
+      T: Tlinq[Repr],
+      N: Nested[Repr]): Repr[Org => List[String]] =
+    expertise(u)(Optica[Wrap[Repr, ?], Repr], Model[Wrap[Repr, ?]])
+
   def expertiseTlinq(u: String): Org => List[String] =
     expertise[Wrap[λ[x => x], ?], λ[x => x]](u)
 
   "Optica" should "translate expertise into a function" in {
-    expertiseTlinq("abstract")(Nested[λ[x => x]]) shouldBe 
+    expertiseTlinq("abstract")(Nested[λ[x => x]]) shouldBe
       List("Quality", "Research")
   }
 

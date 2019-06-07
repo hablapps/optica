@@ -25,11 +25,12 @@ trait Optica_[Repr[_]] extends GetterSym[Repr]
 }
 
 trait Optica[Repr[_], Obs[_]] extends Optica_[Repr]
-    with GetterAct[Repr, Obs] 
+    with GetterAct[Repr, Obs]
     with AffineFoldAct[Repr, Obs]
     with FoldAct[Repr, Obs]
 
 object Optica {
+  def apply[Repr[_], Obs[_]](implicit O: Optica[Repr, Obs]) = O
 
   implicit object ROptica extends interpreter.R
 

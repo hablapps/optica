@@ -21,6 +21,8 @@ trait Model[Repr[_]] {
 
 object Model {
 
+  def apply[Repr[_]](implicit M: Model[Repr]) = M
+
   implicit object R extends interpreter.RModel
 
   implicit object xQueryModel extends interpreter.XQueryModel
