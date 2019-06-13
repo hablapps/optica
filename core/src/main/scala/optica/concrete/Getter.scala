@@ -30,13 +30,13 @@ object Getter {
   def not[S](b: Getter[S, Boolean]): Getter[S, Boolean] = b >>> Getter(!_)
 
   def equal[S, A: Equal](x: Getter[S, A], y: Getter[S, A]): Getter[S, Boolean] =
-    x *** y >>> Getter { case (a, b) => (a === b) }
+    Getter(s => x.get(s) === y.get(s))
 
   def greaterThan[S](x: Getter[S, Int], y: Getter[S, Int]): Getter[S, Boolean] =
-    x *** y >>> Getter { case (a, b) => (a > b) }
+    Getter(s => x.get(s) > y.get(s))
 
   def subtract[S](x: Getter[S, Int], y: Getter[S, Int]): Getter[S, Int] =
-    x *** y >>> Getter { case (a, b) => (a - b) }
+    Getter(s => x.get(s) - y.get(s))
 
   trait GetterSyntax {
 

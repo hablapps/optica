@@ -70,8 +70,14 @@ trait RFoldAct extends FoldAct[λ[x => x], λ[x => x]] {
   def getAll[S, A](fl: Fold[S, A]) = fl.getAll
 }
 
-class R extends Optica[λ[x => x], λ[x => x]]
-  with RGetterSym with RGetterAct 
-  with RAffineFoldSym with RAffineFoldAct
-  with RFoldSym with RFoldAct
+class ROptica_ extends Optica_[λ[x => x]]
+  with RGetterSym 
+  with RAffineFoldSym 
+  with RFoldSym
+
+class R extends ROptica_
+  with Optica[λ[x => x], λ[x => x]]
+  with RGetterAct 
+  with RAffineFoldAct  
+  with RFoldAct
 
