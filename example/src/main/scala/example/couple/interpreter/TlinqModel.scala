@@ -52,7 +52,7 @@ object Schema {
     where((c.her === w.name) && (c.him === m.name) && (w.age > m.age))(
     yields(w.name *** (w.age - m.age))))))
   }
-  
+
   implicit object RSchema extends Schema[λ[x => x]] {
 
     def table_person = List(
@@ -139,6 +139,18 @@ object Nested {
     foreach(table_person)(w =>
     where(c.her === w.name && c.him === m.name)(
     yields(Couple(Person(w.name, w.age), Person(m.name, m.age)))))))
+  }
+
+  import syntax._
+
+  def under50_d[Repr[_]](implicit
+      Q: Tlinq[Repr],
+      S: Schema[Repr],
+      N: Nested[Repr]): Repr[List[String]] = {
+    import Q._
+    foreach(apply)(c =>
+    where(c.her.age > int(50))(
+    yields(c.her.name)))
   }
 
   implicit object RNested extends Nested[λ[x => x]] {
