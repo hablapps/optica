@@ -4,8 +4,8 @@
 
 This repository contains *Optica*, the library associated to the article
 *Viewing Language-Integrated Query From a Different Optic* (J. López González
-and Juan M.  Serrano), which was recently submitted to *Science of Computer
-Programming*.
+and Juan M.  Serrano), which was recently submitted to [*Science of Computer
+Programming*](https://www.journals.elsevier.com/science-of-computer-programming).
 
 ## Repo Structure
 
