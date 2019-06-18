@@ -43,7 +43,7 @@ object ToSQL {
       vars: VarTree)(
       MR: MonadReader[M, TypeNme ==>> FieldNme],
       ME: MonadError[M, Error]): M[SqlFrom] =
-    // XXX: this will fail when no inner table is created (get)
+    // FIXME: this will fail when no inner table is created (get)
     // => tabToSql should return an optional table
     vars.subtree(! _.forest.filter(_.tag._2).isEmpty).get.forest.toList match {
       case (ot, it@ITree((v, l), _)) :: xs =>
@@ -83,7 +83,7 @@ object ToSQL {
       ot: OpticType)(implicit
       MR: MonadReader[M, TypeNme ==>> FieldNme]): M[SqlJoin] =
     MR.ask >>= (keys => MR.point(SEqJoin(ot.to, v, ot match {
-      // XXX: unsafe get
+      // TODO: unsafe get, move to MonadError
       case FoldType(_, from, _) => SUsing(keys.lookup(from).get)
       case other => condToSql(topv, nme, v, keys.lookup(other.to).get)
     })))
@@ -96,7 +96,7 @@ object ToSQL {
     for {
       oe1 <- whrColToSql(whr, vars)(MR, ME)
       oe2 <- whrExtToSql(vars)(MR, ME)
-    } yield (oe1, oe2) match { // XXX: Alternative monad?
+    } yield (oe1, oe2) match {
       case (None, other) => other
       case (other, None) => other
       case (Some(e1), Some(e2)) => Some(SBinOp("AND", e1, e2))
@@ -135,13 +135,8 @@ object ToSQL {
               case None =>
                 ME.raiseError[Option[SqlExp]](new Error(s"Can't find '$from' in keys '$keys'"))
             }
-          // XXX: we're just covering Folds!!!
-          // case (ot, ITree((v, _), _), acc) => {
-          //   val e = SBinOp("=",
-          //     SProj(vars2.tag._1, keys.lookup(ot.from).get),
-          //     SProj(v, keys.lookup(ot.from).get))
-          //   acc.fold(Option(e))(l => Option(SBinOp("AND", l, e)))
-          // }
+          // TODO: we're just covering Folds
+          case _ => ME.raiseError(new Error(s"TODO: support for other optics"))
         }
       } yield oe
     else MR.point(Option.empty)

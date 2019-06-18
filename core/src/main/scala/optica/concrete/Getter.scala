@@ -8,8 +8,6 @@ case class Getter[S, A](get: S => A)
 
 object Getter {
 
-  import CategoryWithProduct.syntax._
-
   implicit object GetterCat extends CategoryWithProduct[Getter, Tuple2] {
 
     def id[A]: Getter[A, A] = Getter(identity)
